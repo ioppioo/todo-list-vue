@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {% for massage in app.flashes('success') %}
+        <div>
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% if error %}
+    <div>
+        {{ error.message }}
+    </div>
+    {% endif %}
+
+    <form class="inner-form" action="/login" method="post">
+        <div>
+            <label class="label-text" for="login">Логин: <input type="text" id="login" name="_username" value="{{ login }}"></label>
+        </div>
+        <div>
+            <label class="label-text" for="password">Пароль: <input type="password" id="password" name="_password"></label>
+        </div>
+
+        <div class="button">
+            <button type="submit">Войти</button>
+        </div>
+    </form>
+{% endblock %}

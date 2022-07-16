@@ -1,0 +1,45 @@
+
+
+@font-face {
+    font-family: FiraSansExtraCondensed-SemiBold;
+    src: url(../fonts/FiraSansExtraCondensed-SemiBold.ttf);
+}
+
+@font-face {
+    font-family: FiraSansExtraCondensed-ExtraLight;
+    src: url(../fonts/FiraSansExtraCondensed-ExtraLight.ttf);
+}
+
+body {
+    margin: 0;
+}
+
+form {
+    margin: 0 auto;
+    width: 300px;
+    background-color: antiquewhite;
+    border-radius: 15px;
+}
+
+.inner-form {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    font-family: FiraSansExtraCondensed-SemiBold, sans-serif;
+}
+
+input {
+    background-color: antiquewhite;
+    font-family: FiraSansExtraCondensed-ExtraLight, sans-serif;
+}
+
+input:focus {
+    background-color: antiquewhite;
+    font-family: FiraSansExtraCondensed-ExtraLight, sans-serif;
+}
