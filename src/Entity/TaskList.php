@@ -14,8 +14,8 @@ class TaskList
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column()]
-    private ?int $id = null;
+    #[ORM\Column(type: 'integer')]
+    private $id;
 
 //    #[ORM\Column(length: 255)]
 //    private ?int $task_id = null;

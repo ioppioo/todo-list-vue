@@ -26,6 +26,7 @@ final class Version20220723223154 extends AbstractMigration
         $this->addSql('ALTER TABLE task ADD CONSTRAINT FK_527EDB25DDE6A3D7 FOREIGN KEY (task_lists_id) REFERENCES task_list (id)');
         $this->addSql('CREATE INDEX IDX_527EDB25DDE6A3D7 ON task (task_lists_id)');
         $this->addSql('ALTER TABLE task_list ADD title VARCHAR(255) NOT NULL');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON user (email)');
     }
 
     public function down(Schema $schema): void
