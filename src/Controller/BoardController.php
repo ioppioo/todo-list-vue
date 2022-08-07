@@ -5,25 +5,50 @@ namespace App\Controller;
 use App\Entity\Board;
 use App\Repository\BoardRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class BoardController extends AbstractController
 {
-    #[Route("/board")]
-    public function getBoard(BoardRepository $repository)
+    #[Route("/boards")]
+    public function getBoardsList(
+        BoardRepository $repository,
+        SerializerInterface $serializer
+    )
     {
-        return $this->json([
-            'board'=> $repository->findAll()
-        ]);
+        $json = $serializer->serialize(
+            ['boards' => $repository->findAll()],
+            'json',
+            ['groups' => ['boards']]
+        );
+
+        return new JsonResponse($json, json: true);
     }
 
-    #[Route("/board/create-board")]
+    #[Route("/board/{id}")]
+    public function getBoard(
+        BoardRepository $repository,
+        SerializerInterface $serializer,
+        int $id
+    )
+    {
+        $json = $serializer->serialize(
+            $repository->find($id),
+            'json',
+            ['groups' => ['board']]
+        );
+
+        return new JsonResponse($json, json: true);
+    }
+
+    #[Route("/create-board")]
     public function createBoard(BoardRepository $repository)
     {
         $board = new Board();
-        $board->setTitle('test-title');
+        $board->setUser($this->getUser());
+        $board->setTitle('board');
 
         $repository->add($board, true);
 
@@ -31,16 +56,14 @@ class BoardController extends AbstractController
     }
 
     #[Route("/board/{id}/edit")]
-    public function editBoard(BoardRepository $repository, Request $request, int $id): Response
+    public function editBoard(BoardRepository $repository, int $id): Response
     {
         $board = $repository->find($id);
-//      $board->setTitle($request->get('EditTitle'));
-        $board->setTitle('EditTitle');
+        $board->setTitle('board-edit');
 
         $repository->add($board, true);
 
         return $this->json([]);
-//      return new Response();
     }
 
     #[Route("/board/{id}/remove")]
@@ -48,10 +71,7 @@ class BoardController extends AbstractController
     {
         $repository->remove($repository->find($id), true);
 
-        return $this->render('auth/signup.html.twig');
+        return $this->redirect('/boards');
     }
 
-    private function Response()
-    {
-    }
 }

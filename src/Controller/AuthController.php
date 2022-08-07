@@ -42,10 +42,9 @@ class AuthController extends AbstractController
             $email = $request->get('email');
             $this->addFlash('success', "Регистрация завершена! Мы отправили письмо на адрес $email.");
 
-            return $this->render('/board');
+            return $this->redirect('/login');
         }
 
         return $this->render('auth/signup.html.twig');
-
     }
 }

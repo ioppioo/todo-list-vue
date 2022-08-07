@@ -3,33 +3,35 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
+    #[Groups(['board'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[Groups(['board'])]
     #[ORM\Column(length: 255)]
-    private ?string $text = null;
+    private string $text;
 
+    #[Groups(['board'])]
     #[ORM\Column]
-    private ?bool $isDone = null;
+    private bool $isDone = false;
 
-//    #[ORM\ManyToOne(targetEntity: TaskList::class, inversedBy: "tasks")]
-//    private Collection $taskLists;
+    #[ORM\ManyToOne(targetEntity: TaskList::class, inversedBy: "tasks")]
+    private TaskList $taskList;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getText(): ?string
+    public function getText(): string
     {
         return $this->text;
     }
@@ -41,7 +43,7 @@ class Task
         return $this;
     }
 
-    public function isIsDone(): ?bool
+    public function isIsDone(): bool
     {
         return $this->isDone;
     }
@@ -50,6 +52,17 @@ class Task
     {
         $this->isDone = $isDone;
 
+        return $this;
+    }
+
+    public function getTaskList(): TaskList
+    {
+        return $this->taskList;
+    }
+
+    public function setTaskList(TaskList $taskList): Task
+    {
+        $this->taskList = $taskList;
         return $this;
     }
 }

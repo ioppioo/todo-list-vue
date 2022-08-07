@@ -3,37 +3,31 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Repository\BoardRepository;
+use App\Repository\TaskListRepository;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    #[Route("/board/task-list/task")]
-    public function getTask (TaskRepository $repository)
-    {
-        return $this->json([
-            'task' => $repository->findAll()
-        ]);
-    }
-
-    #[Route("/board/task-list/create-task")]
-    public function createTask (TaskRepository $repository)
+    #[Route("task-list/{id}/create-task")]
+    public function createTask (TaskRepository $repository, TaskListRepository $taskListRepository, int $id)
     {
         $task = new Task();
-        $task->setText('задача 1');
-        $task->setIsDone(true);
+        $task->setText('task');
+        $task->setTaskList($taskListRepository->find($id));
 
         $repository->add($task, true);
 
         return $this->json([], 201);
     }
 
-    #[Route("/board/task-list/task-edit-{id}")]
+    #[Route("/task/{id}/edit")]
     public function editTask(TaskRepository $repository, int $id)
     {
         $task = $repository->find($id);
-        $task->setText('EditText');
+        $task->setText('task-edit');
         $task->setIsDone(0);
 
         $repository->add($task, true);
@@ -41,11 +35,11 @@ class TaskController extends AbstractController
         return $this->json([]);
     }
 
-    #[Route("/board/task-list/task-{id}")]
-    public function removeTask(TaskRepository $repository, int $id)
+    #[Route("/task/{id}/remove")]
+    public function removeTask(TaskRepository $taskRepository, int $id)
     {
-        $repository->remove($repository->find($id), true);
+        $taskRepository->remove($taskRepository->find($id), true);
 
-        return $this->render('/board/task-list/remove-task');
+        return $this->redirect('/boards');
     }
 }

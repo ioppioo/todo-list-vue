@@ -6,24 +6,30 @@ use App\Repository\BoardRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: BoardRepository::class)]
 class Board
 {
+    #[Groups(['boards', 'board'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[Groups(['boards', 'board'])]
     #[ORM\Column(length: 255)]
     private string $title;
 
+    #[Groups(['board'])]
     #[ORM\OneToMany(mappedBy: 'board', targetEntity: TaskList::class, orphanRemoval: true)]
     private Collection $taskLists;
 
     #[ORM\ManyToOne(inversedBy: 'board')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    #[Ignore]
+    private User $user;
 
     public function __construct()
     {
@@ -77,12 +83,12 @@ class Board
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
