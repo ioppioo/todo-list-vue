@@ -3,31 +3,43 @@
 namespace App\Controller;
 
 use App\Entity\Task;
-use App\Repository\BoardRepository;
 use App\Repository\TaskListRepository;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    #[Route("task-list/{id}/create-task")]
-    public function createTask (TaskRepository $repository, TaskListRepository $taskListRepository, int $id)
+    #[Route("/tasks", methods: 'POST')]
+    public function createTask (
+        TaskRepository $repository,
+        TaskListRepository $taskListRepository,
+        int $id,
+        Request $request
+    )
     {
+        $taskListId = $request->get('taskListId');
+
         $task = new Task();
         $task->setText('task');
-        $task->setTaskList($taskListRepository->find($id));
+        $task->setTaskList($taskListRepository->find($taskListId));
 
         $repository->add($task, true);
 
         return $this->json([], 201);
     }
 
-    #[Route("/task/{id}/edit")]
-    public function editTask(TaskRepository $repository, int $id)
+    #[Route("/tasks/{id}", methods: 'PUT')]
+    public function editTask(
+        TaskRepository $repository,
+        int $id,
+        Request $request
+    ): Response
     {
         $task = $repository->find($id);
-        $task->setText('task-edit');
+        $task->setText($request->get('task-edit'));
         $task->setIsDone(0);
 
         $repository->add($task, true);
@@ -35,7 +47,7 @@ class TaskController extends AbstractController
         return $this->json([]);
     }
 
-    #[Route("/task/{id}/remove")]
+    #[Route("/tasks/{id}", methods: 'DELETE')]
     public function removeTask(TaskRepository $taskRepository, int $id)
     {
         $taskRepository->remove($taskRepository->find($id), true);

@@ -6,13 +6,14 @@ use App\Entity\Board;
 use App\Repository\BoardRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class BoardController extends AbstractController
 {
-    #[Route("/boards")]
+    #[Route("/boards", methods: 'GET')]
     public function getBoardsList(
         BoardRepository $repository,
         SerializerInterface $serializer
@@ -24,10 +25,11 @@ class BoardController extends AbstractController
             ['groups' => ['boards']]
         );
 
-        return new JsonResponse($json, json: true);
+//        return new JsonResponse($json, json: true);
+        return $this->render('todolist/boards.html.twig');
     }
 
-    #[Route("/board/{id}")]
+    #[Route("/boards/{id}", methods: 'GET')]
     public function getBoard(
         BoardRepository $repository,
         SerializerInterface $serializer,
@@ -37,36 +39,40 @@ class BoardController extends AbstractController
         $json = $serializer->serialize(
             $repository->find($id),
             'json',
-            ['groups' => ['board']]
+            ['groups' => ['todolist']]
         );
 
         return new JsonResponse($json, json: true);
     }
 
-    #[Route("/create-board")]
+    #[Route("/boards", methods: 'POST')]
     public function createBoard(BoardRepository $repository)
     {
         $board = new Board();
         $board->setUser($this->getUser());
-        $board->setTitle('board');
+        $board->setTitle('todolist');
 
         $repository->add($board, true);
 
         return $this->json([],201);
     }
 
-    #[Route("/board/{id}/edit")]
-    public function editBoard(BoardRepository $repository, int $id): Response
+    #[Route("/boards/{id}", methods: 'PUT')]
+    public function editBoard(
+        BoardRepository $repository,
+        int $id,
+        Request $request
+    ): Response
     {
         $board = $repository->find($id);
-        $board->setTitle('board-edit');
+        $board->setTitle($request->get('title'));
 
         $repository->add($board, true);
 
         return $this->json([]);
     }
 
-    #[Route("/board/{id}/remove")]
+    #[Route("/boards/{id}", methods: 'DELETE')]
     public function removeBoard(BoardRepository $repository, int $id)
     {
         $repository->remove($repository->find($id), true);

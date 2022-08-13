@@ -9,17 +9,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
-    #[Groups(['board'])]
+    #[Groups(['todolist'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(['board'])]
+    #[Groups(['todolist'])]
     #[ORM\Column(length: 255)]
     private string $text;
 
-    #[Groups(['board'])]
+    #[Groups(['todolist'])]
     #[ORM\Column]
     private bool $isDone = false;
 

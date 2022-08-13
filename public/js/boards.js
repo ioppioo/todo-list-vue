@@ -1,27 +1,17 @@
-// получение списка досок
-function getBoardList() {
-
-}
-
-// создание доски
-function createBoard() {
-
-}
-
-let currentBoardId = 1;
-function onEditBoardTitle(event) {
-    const input = event.target;
-    const title = input.value;
-    api.editBoard(currentBoardId, title)
-        .then((response) => {
-            console.log(response);
-        })
-        .catch(reason => {
-            console.error(reason);
-        });
-}
-
-input.onblur = onEditBoardTitle;
+// let currentBoardId = 1;
+// function onEditBoardTitle(event) {
+//     const input = event.target;
+//     const title = input.value;
+//     api.editBoard(currentBoardId, title)
+//         .then((response) => {
+//             console.log(response);
+//         })
+//         .catch(reason => {
+//             console.error(reason);
+//         });
+// }
+//
+// input.onblur = onEditBoardTitle;
 
 // создаем кнопку редактирования
 

@@ -12,21 +12,21 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 #[ORM\Entity(repositoryClass: BoardRepository::class)]
 class Board
 {
-    #[Groups(['boards', 'board'])]
+    #[Groups(['boards', 'todolist'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(['boards', 'board'])]
+    #[Groups(['boards', 'todolist'])]
     #[ORM\Column(length: 255)]
     private string $title;
 
-    #[Groups(['board'])]
-    #[ORM\OneToMany(mappedBy: 'board', targetEntity: TaskList::class, orphanRemoval: true)]
+    #[Groups(['todolist'])]
+    #[ORM\OneToMany(mappedBy: 'todolist', targetEntity: TaskList::class, orphanRemoval: true)]
     private Collection $taskLists;
 
-    #[ORM\ManyToOne(inversedBy: 'board')]
+    #[ORM\ManyToOne(inversedBy: 'todolist')]
     #[ORM\JoinColumn(nullable: false)]
     #[Ignore]
     private User $user;
