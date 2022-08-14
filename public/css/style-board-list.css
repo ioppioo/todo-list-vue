@@ -14,9 +14,9 @@
 
 .notes {
     display: flex;
-    /*align-items: start;*/
+    align-items: start;
     flex-direction: column;
-    /*flex-wrap: wrap;*/
+    flex-wrap: wrap;
     font-family: FiraSansExtraCondensed-ExtraLight, sans-serif;
     font-size: 18px;
     color: #2c2c2c;
