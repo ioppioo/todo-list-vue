@@ -12,7 +12,7 @@
     margin: 0;
 }
 
-.notes {
+.boards {
     display: flex;
     align-items: start;
     flex-direction: column;
@@ -22,7 +22,7 @@
     color: #2c2c2c;
 }
 
-.note {
+.board {
     background-color: antiquewhite;
     width: 270px;
     border-radius: 20px;
@@ -31,70 +31,51 @@
     position: relative;
 }
 
-.title-note {
+.board-title {
     font-family: FiraSansExtraCondensed-SemiBold, sans-serif;
     font-size: 28px;
     margin: 0;
     padding: 15px 35px 15px 15px;
 }
 
-.title-note textarea {
+.board-title textarea {
     font-family: FiraSansExtraCondensed-SemiBold, sans-serif;
     font-size: 28px;
     line-height: 22px;
 }
 
-.title-note textarea:focus {
+.board-title textarea:focus {
     font-family: FiraSansExtraCondensed-SemiBold, sans-serif;
     font-size: 28px;
     line-height: 33px;
 }
 
-.title-note-text {
+.board-title-text {
     line-height: 33px;
-    overflow-wrap: anywhere;
-}
-
-.tasks {
-    padding-left: 30px;
-    padding-right: 25px;
-    padding-bottom: 25px;
-}
-
-.tasks__task-text {
-    line-height: 22px;
     overflow-wrap: anywhere;
 }
 
 /* цвет для заметки */
 
-.note--indianred {
+.board--indianred {
     background-color: #e38c8c;
 }
 
-.note--lavender {
+.board--lavender {
     background-color: lavender;
 }
 
-.note--antiquewhite {
+.board--antiquewhite {
     background-color: antiquewhite;
 }
 
-.note--teal {
+.board--teal {
     background-color: #9cdede;
-}
-
-/* стили для выполненных задач */
-.done {
-    color: #9d9d9d;
-    font-style: italic;
-    text-decoration: line-through;
-    position: relative;
 }
 
 /* стили для новой заметки */
 
-.new-note {
+.boards-board-new {
     background-color: #fcf6f2;
     font-style: italic;
     width: 270px;
@@ -107,13 +88,13 @@
     cursor: pointer;
 }
 
-.title-new-note {
+.board-new-title {
     font-family: FiraSansExtraCondensed-SemiBold, sans-serif;
     padding-left: 15px;
     padding-right: 15px;
 }
 
-.title-new-note textarea {
+.board-new-title textarea {
     font-family: FiraSansExtraCondensed-SemiBold, sans-serif;
 }
 
@@ -128,12 +109,6 @@
 
 .edit-button {
     color: #9d9d9d;
-}
-
-.button-task-new {
-    font-size: 40px;
-    bottom: 0;
-    left: 223px;
 }
 
 .button-task-del {

@@ -1,3 +1,19 @@
+let currentBoardId = 1;
+
+function onEditBoardTitle(event) {
+    const input = event.target;
+    const title = input.value;
+    api.editBoard(currentBoardId, title)
+        .then((response) => {
+            console.log(response);
+        })
+        .catch(reason => {
+            console.error(reason);
+        });
+}
+
+// input.onblur = onEditBoardTitle;
+
 // создаем кнопку редактирования
 
 function createEditButton() {
@@ -13,7 +29,7 @@ function createEditButton() {
 function createEditTitleButton() {
     let button = createEditButton();
     button.addEventListener('click', createTitleText);
-    saveNotes();
+    // saveNotes();
 
     return button;
 }
@@ -27,10 +43,20 @@ function createTitleText(event) {
 // заменяем текущий заголовок заметки полем ввода
 
 function replaceTitleWithInput(title) {
-    let titleText = title.querySelector('.title-note-text');
+    let titleText = title.querySelector('.board-title-text');
     let styles = window.getComputedStyle(titleText);
     let rows = (titleText.getBoundingClientRect().height / parseInt(styles.lineHeight));
-    let input = createTitleInput(titleText.innerText, rows);
+    const oldTitle = titleText.innerText;
+    let input = createTitleInput(oldTitle, rows, () => {
+        const newTitle = input;
+        api.editBoard(id, newTitle)
+            .catch((reason) => {
+                console.error(reason);
+                const titleText = title.querySelector('.board-title-text');
+                titleText.innerHTML = oldTitle;
+            });
+        replaceTitleWithInputText(input);
+    });
     title.innerHTML = '';
     title.appendChild(input);
     input.focus();
@@ -38,21 +64,16 @@ function replaceTitleWithInput(title) {
 
 // создаем новый текст заголовка
 
-function createTitleInput(text, rows) {
+function createTitleInput(text, rows, handler) {
     let input = createInput(text, rows);
-    input.onblur = replaceInputWithTitle;
+    input.onblur = handler;
 
     return input;
 }
 
-function replaceInputWithTitle(event) {
-    let input = event.target;
-    replaceTitleWithInputText(input);
-}
-
 function createEditNewTitleText(text) {
     let titleText = document.createElement('span');
-    titleText.classList.add('title-note-text');
+    titleText.classList.add('board-title-text');
     titleText.innerText = text.trim();
 
     return titleText;
@@ -62,7 +83,7 @@ function replaceTitleWithInputText(input) {
     let newText = input.value;
     let title = input.parentElement;
     if (newText.trim() === '') {
-        title.closest('.note').remove(); //удаление доски при пустом заголовке
+        title.closest('.board').remove();
         }
     else {
         title.innerHTML = '';
@@ -70,8 +91,6 @@ function replaceTitleWithInputText(input) {
         title.appendChild(createEditTitleButton());
     }
 }
-
-// для работы с задачами
 
 //создаем поле ввода
 
@@ -86,7 +105,7 @@ function createInput(text, rows) {
 
 // добавляем кнопку удаления доски
 
-let notes = document.querySelectorAll('.note');
+let notes = document.querySelectorAll('.board');
 
 for (let button of notes) {
     button.appendChild(createDelButton());
@@ -95,11 +114,11 @@ for (let button of notes) {
 // добавляет новую заметку
 
 function createNewNote() {
-    let newNote = document.querySelector('.new-note');
+    let newNote = document.querySelector('.boards-board-new');
     let divNote = document.createElement('div');
     let color = replaceNoteColor();
 
-    divNote.classList.add('note');
+    divNote.classList.add('board');
     divNote.classList.toggle(color);
 
     newNote.after(divNote);
@@ -107,18 +126,20 @@ function createNewNote() {
 
 // добавляем заголовок новой заметки
     let titleNote = document.createElement('div');
-    titleNote.classList.add('title-note');
+    titleNote.classList.add('board-title');
     let titleInput = createTitleInput('', 1);
     titleNote.appendChild(titleInput);
     divNote.appendChild(titleNote);
 
     titleInput.focus();
+
+    api.saveBoards();
 }
 
 // добавление новой заметки
 
 function createNoteButton() {
-    let newNoteButton = document.querySelector('.new-note');
+    let newNoteButton = document.querySelector('.boards-board-new');
     newNoteButton.onclick = function (event) {
         let note = event.target.parentElement;
         createNewNote(note);
@@ -133,10 +154,10 @@ createNoteButton();
 
 function replaceNoteColor() {
     let colors = [
-        'note--indianred',
-        'note--lavender',
-        'note--antiquewhite',
-        'note--teal',
+        'board--indianred',
+        'board--lavender',
+        'board--antiquewhite',
+        'board--teal',
     ];
 
     let randomIndex = Math.floor(Math.random() * colors.length);
@@ -162,12 +183,12 @@ function createDelButton() {
 
 function createTodos() {
     let todoList = [];
-    let todos = document.querySelectorAll('.note');
+    let todos = document.querySelectorAll('.board');
 
     for (const todo of todos) {
         const note = {
             color: todo.classList[1],
-            title: todo.querySelector('.title-note-text').innerText.trim()
+            title: todo.querySelector('.board-title-text').innerText.trim()
         }
         todoList.push(note);
     }
@@ -175,9 +196,23 @@ function createTodos() {
     return todoList;
 }
 
-function saveNotes () {
-    localStorage.setItem('todos', JSON.stringify(createTodos()));
+//сохранение бордов в JSON
+
+// function saveNotes () {
+//     localStorage.setItem('todos', JSON.stringify(createTodos()));
+// }
+
+let saveBoard;
+if (saveBoard) {
+    saveBoard.forEach();
 }
+
+// let saveBoard;
+// if (saveBoard) {
+//     saveBoard.forEach(loadNote);
+// }
+
+//загрузка бордов из JSON
 
 let savedNotes = JSON.parse(localStorage.getItem('todos'));
 if (savedNotes) {
@@ -189,7 +224,7 @@ if (savedNotes) {
 function loadNote(note) {
 
     // создаем заметку
-    let newNote = document.querySelector('.new-note');
+    let newNote = document.querySelector('.boards-board-new');
     let divNote = document.createElement('div');
 
     // подгружаем цвет заметки
@@ -198,13 +233,13 @@ function loadNote(note) {
 
     // добавляем заголовок заметки
     let titleNote = document.createElement('div');
-    titleNote.classList.add('title-note');
+    titleNote.classList.add('board-title');
 
     let titleText = createEditNewTitleText(note.title);
     titleNote.appendChild(titleText);
     titleNote.append(createEditTitleButtonToLocal())
 
-    newNote.before(divNote);
+    newNote.after(divNote);
     divNote.append(createDelButton());
     divNote.appendChild(titleNote);
 }

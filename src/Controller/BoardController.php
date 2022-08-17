@@ -46,15 +46,16 @@ class BoardController extends AbstractController
     }
 
     #[Route("/boards", methods: 'POST')]
-    public function createBoard(BoardRepository $repository)
+    public function createBoard(BoardRepository $repository, Request $request): Response
     {
         $board = new Board();
         $board->setUser($this->getUser());
-        $board->setTitle('todolist');
+        $board->setTitle('board-title');
 
         $repository->add($board, true);
 
         return $this->json([],201);
+//        return new Response();
     }
 
     #[Route("/boards/{id}", methods: 'PUT')]

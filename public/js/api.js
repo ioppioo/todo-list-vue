@@ -11,8 +11,12 @@ window.api = {
         });
     },
 
-    getBoardsList(id, title) {
-        return api.request('/boards', 'GET', {id}, {title});
+    saveBoards(id, title) {
+        return api.request('/boards', 'POST', {title});
+    },
+
+    loadBoards(id, title) {
+        return api.request('/boards', 'GET', {title});
     },
 
     editBoard(id, title) {

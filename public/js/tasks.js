@@ -1,27 +1,30 @@
-// получение списка досок
-function getBoardList() {
 
-}
 
-// создание доски
-function createBoard() {
 
-}
 
-let currentBoardId = 1;
-function onEditBoardTitle(event) {
-    const input = event.target;
-    const title = input.value;
-    api.editBoard(currentBoardId, title)
-        .then((response) => {
-            console.log(response);
-        })
-        .catch(reason => {
-            console.error(reason);
-        });
-}
 
-input.onblur = onEditBoardTitle;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // создаем кнопку редактирования
 
@@ -55,17 +58,7 @@ function replaceTitleWithInput(title) {
     let titleText = title.querySelector('.title-note-text');
     let styles = window.getComputedStyle(titleText);
     let rows = (titleText.getBoundingClientRect().height / parseInt(styles.lineHeight));
-    const oldTitle = titleText.innerText;
-    let input = createTitleInput(oldTitle, rows, (event) => {
-        const newTitle = input;
-        replaceTitleWithInputText(input);
-        api.editBoard(id, newTitle)
-            .catch((reason) => {
-                console.error(reason);
-                const titleText = title.querySelector('.title-note-text');
-                titleText.innerHTML = oldTitle;
-            });
-    });
+    let input = createTitleInput(titleText.innerText, rows);
     title.innerHTML = '';
     title.appendChild(input);
     input.focus();
@@ -73,11 +66,16 @@ function replaceTitleWithInput(title) {
 
 // создаем новый текст заголовка
 
-function createTitleInput(text, rows, handler) {
+function createTitleInput(text, rows) {
     let input = createInput(text, rows);
-    input.onblur = handler;
+    input.onblur = replaceInputWithTitle;
 
     return input;
+}
+
+function replaceInputWithTitle(event) {
+    let input = event.target;
+    replaceTitleWithInputText(input);
 }
 
 function createEditNewTitleText(text) {
