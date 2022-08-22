@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    #[Route("/tasks", methods: 'POST')]
+    #[Route("/task-lists/{id}/task")]
     public function createTask (
         TaskRepository $repository,
         TaskListRepository $taskListRepository,
@@ -20,7 +20,7 @@ class TaskController extends AbstractController
         Request $request
     )
     {
-        $taskListId = $request->get('taskListId');
+        $taskListId = $request->get('id');
 
         $task = new Task();
         $task->setText('task');
@@ -31,7 +31,7 @@ class TaskController extends AbstractController
         return $this->json([], 201);
     }
 
-    #[Route("/tasks/{id}", methods: 'PUT')]
+    #[Route("/tasks/{id}/edit")]
     public function editTask(
         TaskRepository $repository,
         int $id,
@@ -47,7 +47,7 @@ class TaskController extends AbstractController
         return $this->json([]);
     }
 
-    #[Route("/tasks/{id}", methods: 'DELETE')]
+    #[Route("/tasks/{id}/remove")]
     public function removeTask(TaskRepository $taskRepository, int $id)
     {
         $taskRepository->remove($taskRepository->find($id), true);
