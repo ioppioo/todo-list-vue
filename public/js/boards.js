@@ -48,7 +48,7 @@ function replaceTitleWithInput(title) {
     let rows = (titleText.getBoundingClientRect().height / parseInt(styles.lineHeight));
     const oldTitle = titleText.innerText;
     let input = createTitleInput(oldTitle, rows, (newTitle) => {
-        api.editBoard(23, newTitle)
+        api.editBoard(1, newTitle)
             .catch((reason) => {
                 console.error(reason);
                 const titleText = title.querySelector('.board-title-text');
@@ -176,7 +176,7 @@ function createDelButton() {
     createDelButton.onclick = function () {
         createDelButton.parentElement.remove();
 
-        api.deleteBoard(23, title);
+        api.deleteBoard(1, title);
     }
 
     return createDelButton;

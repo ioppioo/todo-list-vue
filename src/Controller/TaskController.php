@@ -20,7 +20,7 @@ class TaskController extends AbstractController
         Request $request
     )
     {
-        $taskListId = $request->get('id');
+        $taskListId = $request->get('taskListId');
 
         $task = new Task();
         $task->setText('task');

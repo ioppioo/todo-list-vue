@@ -20,7 +20,7 @@ class TaskListController extends AbstractController
         Request $request
     )
     {
-        $boardId = $request->get('id');
+        $boardId = $request->get('boardId');
 
         $taskList = new TaskList();
         $taskList->setBoard($boardRepository->find($boardId));
@@ -43,7 +43,7 @@ class TaskListController extends AbstractController
 
         $repository->add($taskList, true);
 
-        return $this->json([]);
+        return $this->redirect('/boards');
     }
 
 }

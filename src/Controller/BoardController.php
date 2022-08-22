@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class BoardController extends AbstractController
 {
-    #[Route("/boards")]
+    #[Route("/boards", methods: "GET")]
     public function getBoardsList(
         BoardRepository $repository,
         SerializerInterface $serializer
@@ -29,7 +29,7 @@ class BoardController extends AbstractController
         return $this->render('todolist/boards.html.twig');
     }
 
-    #[Route("/boards/{id}")]
+    #[Route("/boards/{id}", methods: "GET")]
     public function getBoard(
         BoardRepository $repository,
         SerializerInterface $serializer,
@@ -45,19 +45,19 @@ class BoardController extends AbstractController
         return new JsonResponse($json, json: true);
     }
 
-    #[Route("/boards/create")]
-    public function createBoard(BoardRepository $repository)
+    #[Route("/boards", methods: "POST")]
+    public function createBoard(BoardRepository $repository, Request $request)
     {
         $board = new Board();
         $board->setUser($this->getUser());
-        $board->setTitle('board');
+        $board->setTitle('board-title');
 
         $repository->add($board, true);
 
         return $this->json([],201);
     }
 
-    #[Route("/boards/{id}/edit")]
+    #[Route("/boards/{id}", methods: "PUT")]
     public function editBoard(
         BoardRepository $repository,
         int $id,
@@ -65,15 +65,18 @@ class BoardController extends AbstractController
     ): Response
     {
         $board = $repository->find($id);
-        $board->setTitle('title'); //$request->get('title')
+        $board->setTitle($request->get('title'));
 
         $repository->add($board, true);
 
         return $this->json([]);
     }
 
-    #[Route("/boards/{id}/remove")]
-    public function removeBoard(BoardRepository $repository, int $id)
+    #[Route("/boards/{id}", methods: "DELETE")]
+    public function removeBoard(
+        BoardRepository $repository,
+        int $id
+    ): Response
     {
         $repository->remove($repository->find($id), true);
 
