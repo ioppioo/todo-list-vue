@@ -20,6 +20,10 @@ window.api = {
     },
 
     editBoard(id, title) {
-        return api.request('/boards/${id}', 'PUT', {title});
+        return api.request(`/boards/${id}`, 'PUT', {title});
     },
+
+    deleteBoard(id, title) {
+        return api.request(`/boards/${id}`, 'DELETE', {title})
+    }
 };

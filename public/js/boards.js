@@ -47,15 +47,13 @@ function replaceTitleWithInput(title) {
     let styles = window.getComputedStyle(titleText);
     let rows = (titleText.getBoundingClientRect().height / parseInt(styles.lineHeight));
     const oldTitle = titleText.innerText;
-    let input = createTitleInput(oldTitle, rows, () => {
-        const newTitle = input;
-        api.editBoard(id, newTitle)
+    let input = createTitleInput(oldTitle, rows, (newTitle) => {
+        api.editBoard(23, newTitle)
             .catch((reason) => {
                 console.error(reason);
                 const titleText = title.querySelector('.board-title-text');
                 titleText.innerHTML = oldTitle;
             });
-        replaceTitleWithInputText(input);
     });
     title.innerHTML = '';
     title.appendChild(input);
@@ -66,7 +64,11 @@ function replaceTitleWithInput(title) {
 
 function createTitleInput(text, rows, handler) {
     let input = createInput(text, rows);
-    input.onblur = handler;
+    input.onblur = () => {
+        handler(input.value);
+        replaceTitleWithInputText(input);
+    };
+
 
     return input;
 }
@@ -127,13 +129,13 @@ function createNewNote() {
 // добавляем заголовок новой заметки
     let titleNote = document.createElement('div');
     titleNote.classList.add('board-title');
-    let titleInput = createTitleInput('', 1);
+    let titleInput = createTitleInput('', 1, () => {
+        api.saveBoards();
+    });
     titleNote.appendChild(titleInput);
     divNote.appendChild(titleNote);
 
     titleInput.focus();
-
-    api.saveBoards();
 }
 
 // добавление новой заметки
@@ -173,7 +175,8 @@ function createDelButton() {
     createDelButton.innerText = '🞫';
     createDelButton.onclick = function () {
         createDelButton.parentElement.remove();
-        saveNotes();
+
+        api.deleteBoard(23, title);
     }
 
     return createDelButton;

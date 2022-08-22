@@ -36,7 +36,7 @@ class TaskList
     #[ORM\JoinColumn(nullable: false)]
     private Board $board;
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

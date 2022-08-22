@@ -25,17 +25,18 @@ class BoardController extends AbstractController
             ['groups' => ['boards']]
         );
 
-//        return new JsonResponse($json, json: true);
-        return $this->render('todolist/boards.html.twig');
+        return new JsonResponse($json, json: true);
+//        return $this->render('todolist/boards.html.twig');
     }
 
     #[Route("/boards/{id}", methods: 'GET')]
     public function getBoard(
         BoardRepository $repository,
         SerializerInterface $serializer,
-        int $id
+        int $id,
     )
     {
+
         $json = $serializer->serialize(
             $repository->find($id),
             'json',
@@ -43,6 +44,7 @@ class BoardController extends AbstractController
         );
 
         return new JsonResponse($json, json: true);
+//        return $this->render('todolist/task-list.html.twig');
     }
 
     #[Route("/boards", methods: 'POST')]
@@ -74,7 +76,10 @@ class BoardController extends AbstractController
     }
 
     #[Route("/boards/{id}", methods: 'DELETE')]
-    public function removeBoard(BoardRepository $repository, int $id)
+    public function removeBoard(
+        BoardRepository $repository,
+        int $id
+    ): Response
     {
         $repository->remove($repository->find($id), true);
 
