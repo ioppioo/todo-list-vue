@@ -26,23 +26,24 @@ class BoardController extends AbstractController
         );
 
 //        return new JsonResponse($json, json: true);
-        return $this->render('todolist/boards.html.twig');
+        return $this->render('todolist/boards-edit.html.twig');
     }
 
     #[Route("/boards/{id}", methods: "GET")]
     public function getBoard(
-        BoardRepository $repository,
+        Board $board,
         SerializerInterface $serializer,
-        int $id
     )
     {
-        $json = $serializer->serialize(
-            $repository->find($id),
-            'json',
-            ['groups' => ['todolist']]
-        );
 
-        return new JsonResponse($json, json: true);
+//        $json = $serializer->serialize(
+//            $repository->find($id),
+//            'json',
+//            ['groups' => ['todolist']]
+//        );
+
+//        return new JsonResponse($json, json: true);
+        return $this->render('todolist/board.html.twig', ['taskLists'=>$board->getTaskLists()]);
     }
 
     #[Route("/boards", methods: "POST")]

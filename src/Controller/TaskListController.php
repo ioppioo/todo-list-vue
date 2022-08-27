@@ -12,30 +12,41 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskListController extends AbstractController
 {
-    #[Route("/boards/{id}/task-lists")]
-    public function createTaskList(
-        TaskListRepository $repository,
-        BoardRepository $boardRepository,
-        int $id,
-        Request $request
+    #[Route("/task-lists", methods: 'POST')]
+    public function store(
+        TaskListRepository $taskListRepository,
+        BoardRepository    $boardRepository,
+        Request            $request
     )
     {
         $boardId = $request->get('boardId');
+        $board = $boardRepository->find($boardId);
 
         $taskList = new TaskList();
-        $taskList->setBoard($boardRepository->find($boardId));
-        $taskList->setTitle('TaskList');
 
-        $repository->add($taskList, true);
+        $taskList->setBoard($board);
+        $taskList->setTitle($request->get('title'));
+        $taskListRepository->add($taskList, true);
 
-        return $this->json([]);
+        return $this->redirect("/boards/{$boardId}");
     }
 
-    #[Route("/task-lists/{id}/edit")]
+    #[Route("/boards/{boardId}/task-lists/create", methods: 'GET')]
+    public function create(
+        BoardRepository $boardRepository,
+        int             $boardId
+    )
+    {
+        $board = $boardRepository->find($boardId);
+
+        return $this->render('todolist/task-list-edit.html.twig', ['boardId' => $board->getId()]);
+    }
+
+    #[Route("/task-lists/{id}/edit", methods: 'PUT')]
     public function editTaskList(
         TaskListRepository $repository,
-        int $id,
-        Request $request
+        int                $id,
+        Request            $request
     ): Response
     {
         $taskList = $repository->find($id);

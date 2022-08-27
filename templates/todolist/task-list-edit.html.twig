@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <form class="boards" action="/task-lists" method="POST">
+        <div class="notes">
+            <div class="new-note">
+                <input type="hidden" id="boardId" name="boardId" value="{{ boardId }}">
+                <label class="title-note" for="task-list">
+                    Заголовок списка
+                    <input class="input" type="text" id="title" name="title">
+                </label>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

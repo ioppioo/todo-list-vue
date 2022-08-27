@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {% for taskList in taskLists %}
+    <div class="note">
+        <div class="title-note">
+            <span class="title-note-text">{{ taskList.title }}</span>
+        </div>
+            <ol class="tasks">
+                {% for task in taskList.tasks %}
+                    <li class="tasks__task">{{ task.text }}</li>
+                {% endfor %}
+            </ol>
+    </div>
+    {% endfor %}
+
+{% endblock %}

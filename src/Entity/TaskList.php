@@ -27,14 +27,14 @@ class TaskList
     #[ORM\OneToMany(mappedBy: "taskList", targetEntity: Task::class)]
     private Collection $tasks;
 
+    #[ORM\ManyToOne(targetEntity: Board::class, inversedBy: 'taskLists')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Board $board;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
     }
-
-    #[ORM\ManyToOne(inversedBy: 'taskLists')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Board $board;
 
     public function getId(): int
     {
