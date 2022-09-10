@@ -1,13 +1,17 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <div class="boards">
-        <div class="boards-board-new">
-            <h2 class="board-new-title">
-                <span class="board-title-text">
-                    Новая доска...
-                </span>
-            </h2>
+
+    <form class="boards" action="/boards" method="POST">
+        <div class="boards">
+            <div class="board">
+                <input type="hidden" id="boardId" name="boardId" value="{{ boardId }}">
+                <label class="board-title" for="boards">
+                    <textarea class="input" rows="1" id="title" name="title"></textarea>
+                    <button class="button button-edit">✓</button>
+                </label>
+            </div>
         </div>
-    </div>
+    </form>
+
 {% endblock %}

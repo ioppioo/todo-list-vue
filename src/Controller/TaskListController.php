@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskListController extends AbstractController
 {
-    #[Route("/task-lists", methods: 'POST',)]
+    #[Route("/task-lists", methods: 'POST')]
     public function store(
         TaskListRepository $taskListRepository,
         BoardRepository    $boardRepository,
