@@ -1,0 +1,38 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="notes">
+
+        <div class="new-note">
+            <h2 class="title-new-note">
+                <a href="/boards/{{ board.id }}/task-lists/create" class="title-note-text">Новый список...</a>
+            </h2>
+        </div>
+
+        {% for taskList in board.taskLists %}
+
+            <div class="note">
+                <a href="/task-lists/{{ taskList.id }}/task/create" class="button button-task-new">+</a>
+                <a href="/task-lists/{{ taskList.id }}/remove" class="button button-task-del">🞫</a>
+                <div class="title-note">
+                    <span class="title-note-text">{{ taskList.title }}</span>
+                    <a href="/task-lists/{{ taskList.id }}/edit" class="button button-edit">✎</a>
+                </div>
+                <ol class="tasks">
+                    {% for task in taskList.tasks %}
+                        <li class="tasks__task {{ task.isDone ? 'done' : '' }}">
+                            <span class="tasks__task-text">{{ task.text }}</span>
+                            <a href="/tasks/{{ task.id }}/edit" class="button button-edit">✎ </a>
+                            <a href="/tasks/{{ task.id }}/remove" class="button button-tasks-remove"> 🞫</a>
+                        </li>
+                    {% endfor %}
+                </ol>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+{% endblock %}

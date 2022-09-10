@@ -125,8 +125,14 @@
     color: #2c2c2c;
 }
 
-.edit-button {
+.button-edit {
     color: #9d9d9d;
+    text-decoration: none;
+}
+
+.button-tasks-remove {
+    color: #9d9d9d;
+    margin-left: 20px;
 }
 
 .button-task-new {

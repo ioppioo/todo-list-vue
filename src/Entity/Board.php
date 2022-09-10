@@ -23,10 +23,10 @@ class Board
     private string $title;
 
     #[Groups(['todolist'])]
-    #[ORM\OneToMany(mappedBy: 'todolist', targetEntity: TaskList::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'board', targetEntity: TaskList::class, orphanRemoval: true)]
     private Collection $taskLists;
 
-    #[ORM\ManyToOne(inversedBy: 'todolist')]
+    #[ORM\ManyToOne(inversedBy: 'boards')]
     #[ORM\JoinColumn(nullable: false)]
     #[Ignore]
     private User $user;
