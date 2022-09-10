@@ -11,10 +11,50 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BoardController extends AbstractController
 {
-    #[Route("/boards", methods: "GET")]
-    public function getBoardsList()
+    #[Route("/boards", methods: 'POST')]
+    public function store(
+        BoardRepository $boardRepository,
+        Request         $request
+    )
     {
-        return $this->render('todolist/boards-edit.html.twig');
+        $boardId = (int)$request->get('boardId');
+        if ($boardId === 0) {
+            $board = new Board();
+        } else {
+            $board = $boardRepository->find($boardId);
+        }
+
+        $board->setUser($this->getUser());
+        $board->setTitle($request->get('title'));
+        $boardRepository->add($board, true);
+
+        return $this->redirect("/boards");
+    }
+
+    #[Route("/boards/create", methods: 'GET')]
+    public function create()
+    {
+        return $this->render('todolist/boards-edit.html.twig',
+            [
+                'boardId' => 0,
+            ]
+        );
+    }
+
+    #[Route("/boards", methods: "GET")]
+    public function getBoardsList(
+        BoardRepository $boardRepository,
+        Request         $request
+    )
+    {
+        $boardId = $request->get('boardId');
+
+        return $this->render('todolist/boards.html.twig',
+            [
+                'boards' => $boardRepository->findAll(),
+                'boardId' => $boardId
+            ]
+        );
     }
 
     #[Route("/boards/{id}", methods: "GET")]
@@ -27,42 +67,28 @@ class BoardController extends AbstractController
         );
     }
 
-    #[Route("/boards", methods: "POST")]
-    public function createBoard(BoardRepository $repository, Request $request)
-    {
-        $board = new Board();
-        $board->setUser($this->getUser());
-        $board->setTitle('board-title');
-
-        $repository->add($board, true);
-
-        return $this->json([], 201);
-    }
-
-    #[Route("/boards/{id}", methods: "PUT")]
+    #[Route("/boards/{boardId}/edit", methods: "GET")]
     public function editBoard(
-        BoardRepository $repository,
-        int             $id,
-        Request         $request
+        BoardRepository $boardRepository,
+        int             $boardId
     ): Response
     {
-        $board = $repository->find($id);
-        $board->setTitle($request->get('title'));
+        $board = $boardRepository->find($boardId);
 
-        $repository->add($board, true);
-
-        return $this->json([]);
+        return $this->render('todolist/boards-edit.html.twig',
+            [
+                'boardId' => $board->getId(),
+            ]);
     }
 
-    #[Route("/boards/{id}", methods: "DELETE")]
+    #[Route("/boards/{boardId}/remove")]
     public function removeBoard(
-        BoardRepository $repository,
-        int             $id
+        BoardRepository $boardRepository,
+        int             $boardId
     ): Response
     {
-        $repository->remove($repository->find($id), true);
+        $boardRepository->remove($boardRepository->find($boardId), true);
 
         return $this->redirect('/boards');
     }
-
 }
