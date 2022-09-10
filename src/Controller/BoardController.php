@@ -5,45 +5,26 @@ namespace App\Controller;
 use App\Entity\Board;
 use App\Repository\BoardRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class BoardController extends AbstractController
 {
     #[Route("/boards", methods: "GET")]
-    public function getBoardsList(
-        BoardRepository $repository,
-        SerializerInterface $serializer
-    )
+    public function getBoardsList()
     {
-        $json = $serializer->serialize(
-            ['boards' => $repository->findAll()],
-            'json',
-            ['groups' => ['boards']]
-        );
-
-//        return new JsonResponse($json, json: true);
         return $this->render('todolist/boards-edit.html.twig');
     }
 
     #[Route("/boards/{id}", methods: "GET")]
-    public function getBoard(
-        Board $board,
-        SerializerInterface $serializer,
-    )
+    public function getBoard(Board $board)
     {
-
-//        $json = $serializer->serialize(
-//            $repository->find($id),
-//            'json',
-//            ['groups' => ['todolist']]
-//        );
-
-//        return new JsonResponse($json, json: true);
-        return $this->render('todolist/board.html.twig', ['taskLists'=>$board->getTaskLists()]);
+        return $this->render(
+            'todolist/board.html.twig', [
+                'board' => $board
+            ]
+        );
     }
 
     #[Route("/boards", methods: "POST")]
@@ -55,14 +36,14 @@ class BoardController extends AbstractController
 
         $repository->add($board, true);
 
-        return $this->json([],201);
+        return $this->json([], 201);
     }
 
     #[Route("/boards/{id}", methods: "PUT")]
     public function editBoard(
         BoardRepository $repository,
-        int $id,
-        Request $request
+        int             $id,
+        Request         $request
     ): Response
     {
         $board = $repository->find($id);
@@ -76,7 +57,7 @@ class BoardController extends AbstractController
     #[Route("/boards/{id}", methods: "DELETE")]
     public function removeBoard(
         BoardRepository $repository,
-        int $id
+        int             $id
     ): Response
     {
         $repository->remove($repository->find($id), true);

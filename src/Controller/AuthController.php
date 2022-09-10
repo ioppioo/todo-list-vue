@@ -14,22 +14,23 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AuthController extends AbstractController
 {
     #[Route("/login", name: "app_login")]
-    public function login(AuthenticationUtils $authenticationUtils): Response {
+    public function login(AuthenticationUtils $authenticationUtils): Response
+    {
         $lastUsername = $authenticationUtils->getLastUsername();
         $error = $authenticationUtils->getLastAuthenticationError();
 
         return $this->render('auth/login.html.twig', [
-                'login' => $lastUsername,
-                'error' => $error,
-                'message' => null,
-            ]);
+            'login' => $lastUsername,
+            'error' => $error,
+            'message' => null,
+        ]);
     }
 
     #[Route('/signup')]
     public function signUp(
         UserPasswordHasherInterface $passwordHasher,
-        UserRepository $userRepository,
-        Request $request
+        UserRepository              $userRepository,
+        Request                     $request
     ): Response
     {
         if ($request->getMethod() === 'POST') {

@@ -105,10 +105,12 @@
     border: none;
     cursor: pointer;
     color: #2c2c2c;
+    text-decoration: none;
 }
 
-.edit-button {
+.button-edit {
     color: #9d9d9d;
+    font-size: 12px;
 }
 
 .button-task-del {

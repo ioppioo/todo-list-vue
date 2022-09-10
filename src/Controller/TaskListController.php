@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskListController extends AbstractController
 {
-    #[Route("/task-lists", methods: 'POST')]
+    #[Route("/task-lists", methods: 'POST',)]
     public function store(
         TaskListRepository $taskListRepository,
         BoardRepository    $boardRepository,
@@ -39,22 +39,39 @@ class TaskListController extends AbstractController
     {
         $board = $boardRepository->find($boardId);
 
-        return $this->render('todolist/task-list-edit.html.twig', ['boardId' => $board->getId()]);
+        return $this->render('todolist/task-list-edit.html.twig',
+            [
+                'boardId' => $board->getId()
+            ]);
     }
 
-    #[Route("/task-lists/{id}/edit", methods: 'PUT')]
+    #[Route("/task-lists/{taskListId}/edit", methods: 'GET')]
     public function editTaskList(
-        TaskListRepository $repository,
-        int                $id,
-        Request            $request
+        TaskListRepository $taskListRepository,
+        int                $taskListId,
     ): Response
     {
-        $taskList = $repository->find($id);
-        $taskList->setTitle($request->get('task-list'));
+        $taskList = $taskListRepository->find($taskListId);
+        $board = $taskList->getBoard();
 
-        $repository->add($taskList, true);
+        return $this->render('todolist/task-list-edit.html.twig',
+            [
+                'taskListId' => $taskList->getId(),
+                'boardId' => $board->getId()
+            ]);
+    }
 
-        return $this->redirect('/boards');
+    #[Route("/task-lists/{taskListId}/remove")]
+    public function removeTaskLists(
+        TaskListRepository $taskListRepository,
+        int                $taskListId,
+    ): Response
+    {
+        $taskList = $taskListRepository->find($taskListId);
+        $boardId = $taskList->getBoard()->getId();
+        $taskListRepository->remove($taskList, true);
+
+        return $this->redirect("/boards/{$boardId}");
     }
 
 }
