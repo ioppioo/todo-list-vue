@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Board;
 use App\Entity\TaskList;
 use App\Repository\BoardRepository;
 use App\Repository\TaskListRepository;
@@ -22,7 +23,12 @@ class TaskListController extends AbstractController
         $boardId = $request->get('boardId');
         $board = $boardRepository->find($boardId);
 
-        $taskList = new TaskList();
+        $taskListId = (int)$request->get('taskListId');
+        if ($taskListId === 0) {
+            $taskList = new TaskList();
+        } else {
+            $taskList = $taskListRepository->find($taskListId);
+        }
 
         $taskList->setBoard($board);
         $taskList->setTitle($request->get('title'));
@@ -41,7 +47,9 @@ class TaskListController extends AbstractController
 
         return $this->render('todolist/task-list-edit.html.twig',
             [
-                'boardId' => $board->getId()
+                'taskListId' => 0,
+                'boardId' => $board->getId(),
+                'title' => ""
             ]);
     }
 
@@ -56,8 +64,9 @@ class TaskListController extends AbstractController
 
         return $this->render('todolist/task-list-edit.html.twig',
             [
+                'boardId' => $board->getId(),
                 'taskListId' => $taskList->getId(),
-                'boardId' => $board->getId()
+                'title' => $taskList->getTitle()
             ]);
     }
 

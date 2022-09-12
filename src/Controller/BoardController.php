@@ -37,6 +37,7 @@ class BoardController extends AbstractController
         return $this->render('todolist/boards-edit.html.twig',
             [
                 'boardId' => 0,
+                'boardTitle' => ""
             ]
         );
     }
@@ -47,12 +48,9 @@ class BoardController extends AbstractController
         Request         $request
     )
     {
-        $boardId = $request->get('boardId');
-
         return $this->render('todolist/boards.html.twig',
             [
-                'boards' => $boardRepository->findAll(),
-                'boardId' => $boardId
+                'boards' => $boardRepository->findAll()
             ]
         );
     }
@@ -78,6 +76,7 @@ class BoardController extends AbstractController
         return $this->render('todolist/boards-edit.html.twig',
             [
                 'boardId' => $board->getId(),
+                'boardTitle' => $board->getTitle()
             ]);
     }
 
