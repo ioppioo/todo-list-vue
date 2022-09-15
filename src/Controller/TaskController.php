@@ -21,6 +21,9 @@ class TaskController extends AbstractController
     {
         $taskListId = $request->get('taskListId');
         $taskList = $taskListRepository->find($taskListId);
+
+        $this->denyAccessUnlessGranted('edit', $taskList->getBoard());
+
         $boardId = $taskList->getBoard()->getId();
 
         $taskId = (int)$request->get('taskId');
@@ -45,6 +48,8 @@ class TaskController extends AbstractController
     {
         $taskList = $taskListRepository->find($taskListId);
 
+        $this->denyAccessUnlessGranted('edit', $taskList->getBoard());
+
         return $this->render('todolist/task-edit.html.twig',
             [
                 'taskId' => 0,
@@ -61,6 +66,8 @@ class TaskController extends AbstractController
     {
         $task = $repository->find($id);
 
+        $this->denyAccessUnlessGranted('edit', $task->getTaskList()->getBoard());
+
         return $this->render('todolist/task-edit.html.twig',
             [
                 'taskId' => $task->getId(),
@@ -76,6 +83,9 @@ class TaskController extends AbstractController
     ): Response
     {
         $task = $taskRepository->find($id);
+
+        $this->denyAccessUnlessGranted('edit', $task->getTaskList()->getBoard());
+
         $boardId = $task->getTaskList()->getBoard()->getId();
         $taskRepository->remove($task, true);
 

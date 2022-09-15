@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Board;
+use App\Entity\User;
 use App\Repository\BoardRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,7 @@ class BoardController extends AbstractController
             $board = new Board();
         } else {
             $board = $boardRepository->find($boardId);
+            $this->denyAccessUnlessGranted('edit', $board);
         }
 
         $board->setUser($this->getUser());
@@ -37,22 +39,21 @@ class BoardController extends AbstractController
         return $this->render('todolist/boards-edit.html.twig',
             [
                 'boardId' => 0,
+                'boardTitle' => ""
             ]
         );
     }
 
     #[Route("/boards", methods: "GET")]
-    public function getBoardsList(
-        BoardRepository $boardRepository,
-        Request         $request
-    )
+    public function getBoardsList()
     {
-        $boardId = $request->get('boardId');
+        /** @var User $user */
+        $user = $this->getUser();
+        $boards = $user->getBoards();
 
         return $this->render('todolist/boards.html.twig',
             [
-                'boards' => $boardRepository->findAll(),
-                'boardId' => $boardId
+                'boards' => $boards
             ]
         );
     }
@@ -60,6 +61,8 @@ class BoardController extends AbstractController
     #[Route("/boards/{id}", methods: "GET")]
     public function getBoard(Board $board)
     {
+        $this->denyAccessUnlessGranted('view', $board);
+
         return $this->render(
             'todolist/board.html.twig', [
                 'board' => $board
@@ -75,9 +78,12 @@ class BoardController extends AbstractController
     {
         $board = $boardRepository->find($boardId);
 
+        $this->denyAccessUnlessGranted('edit', $board);
+
         return $this->render('todolist/boards-edit.html.twig',
             [
                 'boardId' => $board->getId(),
+                'boardTitle' => $board->getTitle()
             ]);
     }
 
@@ -87,7 +93,11 @@ class BoardController extends AbstractController
         int             $boardId
     ): Response
     {
-        $boardRepository->remove($boardRepository->find($boardId), true);
+        $board = $boardRepository->find($boardId);
+
+        $this->denyAccessUnlessGranted('edit', $board);
+
+        $boardRepository->remove( $board, true);
 
         return $this->redirect('/boards');
     }

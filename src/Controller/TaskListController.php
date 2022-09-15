@@ -22,7 +22,13 @@ class TaskListController extends AbstractController
         $boardId = $request->get('boardId');
         $board = $boardRepository->find($boardId);
 
-        $taskList = new TaskList();
+        $taskListId = (int)$request->get('taskListId');
+        if ($taskListId === 0) {
+            $taskList = new TaskList();
+        } else {
+            $taskList = $taskListRepository->find($taskListId);
+            $this->denyAccessUnlessGranted('edit', $board);
+        }
 
         $taskList->setBoard($board);
         $taskList->setTitle($request->get('title'));
@@ -39,9 +45,13 @@ class TaskListController extends AbstractController
     {
         $board = $boardRepository->find($boardId);
 
+        $this->denyAccessUnlessGranted('edit', $board);
+
         return $this->render('todolist/task-list-edit.html.twig',
             [
-                'boardId' => $board->getId()
+                'taskListId' => 0,
+                'boardId' => $board->getId(),
+                'title' => ""
             ]);
     }
 
@@ -54,10 +64,13 @@ class TaskListController extends AbstractController
         $taskList = $taskListRepository->find($taskListId);
         $board = $taskList->getBoard();
 
+        $this->denyAccessUnlessGranted('edit', $board);
+
         return $this->render('todolist/task-list-edit.html.twig',
             [
+                'boardId' => $board->getId(),
                 'taskListId' => $taskList->getId(),
-                'boardId' => $board->getId()
+                'title' => $taskList->getTitle()
             ]);
     }
 
@@ -68,6 +81,9 @@ class TaskListController extends AbstractController
     ): Response
     {
         $taskList = $taskListRepository->find($taskListId);
+
+        $this->denyAccessUnlessGranted('edit', $taskList->getBoard());
+
         $boardId = $taskList->getBoard()->getId();
         $taskListRepository->remove($taskList, true);
 

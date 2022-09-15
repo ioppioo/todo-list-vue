@@ -7,9 +7,16 @@
 
         <div class="new-note">
             <div class="title-new-note">
-                <a href="/boards/{{ board.id }}/task-lists/create" class="title-note-text">Новый список...</a>
+                <a href="/boards" class="title-note-text">К списку досок</a>
             </div>
         </div>
+
+        <div class="new-note">
+            <div class="title-new-note">
+                <a href="/boards/{{ board.id }}/task-lists/create" class="title-note-text">Новый список</a>
+            </div>
+        </div>
+
 
         {% for taskList in board.taskLists %}
 

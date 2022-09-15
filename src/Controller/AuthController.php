@@ -48,4 +48,5 @@ class AuthController extends AbstractController
 
         return $this->render('auth/signup.html.twig');
     }
+
 }

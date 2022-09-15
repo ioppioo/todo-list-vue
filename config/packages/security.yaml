@@ -22,6 +22,7 @@ security:
                 default_target_path: /boards
             logout:
                 path: app_logout
+                target: /login
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
