@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Board;
 use App\Entity\TaskList;
 use App\Repository\BoardRepository;
 use App\Repository\TaskListRepository;
@@ -28,6 +27,7 @@ class TaskListController extends AbstractController
             $taskList = new TaskList();
         } else {
             $taskList = $taskListRepository->find($taskListId);
+            $this->denyAccessUnlessGranted('edit', $board);
         }
 
         $taskList->setBoard($board);
@@ -44,6 +44,8 @@ class TaskListController extends AbstractController
     )
     {
         $board = $boardRepository->find($boardId);
+
+        $this->denyAccessUnlessGranted('edit', $board);
 
         return $this->render('todolist/task-list-edit.html.twig',
             [
@@ -62,6 +64,8 @@ class TaskListController extends AbstractController
         $taskList = $taskListRepository->find($taskListId);
         $board = $taskList->getBoard();
 
+        $this->denyAccessUnlessGranted('edit', $board);
+
         return $this->render('todolist/task-list-edit.html.twig',
             [
                 'boardId' => $board->getId(),
@@ -77,6 +81,9 @@ class TaskListController extends AbstractController
     ): Response
     {
         $taskList = $taskListRepository->find($taskListId);
+
+        $this->denyAccessUnlessGranted('edit', $taskList->getBoard());
+
         $boardId = $taskList->getBoard()->getId();
         $taskListRepository->remove($taskList, true);
 
