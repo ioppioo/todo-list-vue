@@ -29,10 +29,10 @@
                 </div>
                 <ol class="tasks">
                     {% for task in taskList.tasks %}
-                        <li class="tasks__task {{ task.isDone ? 'done' : '' }}">
+                        <li class="tasks__task {{ task.isDone ? 'done' : '' }}" data-task-id="{{ task.id }}">
                             <span class="tasks__task-text">{{ task.text }}</span>
                             <a href="/tasks/{{ task.id }}/edit" class="button button-edit">✎ </a>
-                            <a href="/tasks/{{ task.id }}/remove" class="button button-tasks-remove"> 🞫</a>
+                            <button class="button button-tasks-remove js-task-remove"> 🞫</button>
                         </li>
                     {% endfor %}
                 </ol>

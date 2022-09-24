@@ -8,6 +8,7 @@ use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
@@ -76,7 +77,7 @@ class TaskController extends AbstractController
             ]);
     }
 
-    #[Route("/tasks/{id}/remove")]
+    #[Route("/tasks/{id}", methods: 'DELETE')]
     public function removeTask(
         TaskRepository $taskRepository,
         int            $id
@@ -84,11 +85,14 @@ class TaskController extends AbstractController
     {
         $task = $taskRepository->find($id);
 
+        if ($task === null) {
+            throw new NotFoundHttpException();
+        }
+
         $this->denyAccessUnlessGranted('edit', $task->getTaskList()->getBoard());
 
-        $boardId = $task->getTaskList()->getBoard()->getId();
         $taskRepository->remove($task, true);
 
-        return $this->redirect("/boards/{$boardId}");
+        return $this->json(['status' => 'ok']);
     }
 }

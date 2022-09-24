@@ -10,7 +10,7 @@ window.api = {
         };
 
         if (data) {
-            params.body = JSON.stringify(data),
+            params.body = JSON.stringify(data);
         }
 
         return fetch(url, params);
