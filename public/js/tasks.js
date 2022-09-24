@@ -1,31 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // создаем кнопку редактирования
 
 function createEditButton() {
@@ -383,4 +355,16 @@ function createEditTaskButtonToLocal() {
     button.addEventListener('click', createTaskText);
 
     return button;
+}
+
+//удаление задачи
+
+document.querySelectorAll('.js-task-remove')
+    .forEach(button => {
+        button.addEventListener('click', onTaskRemove)
+    });
+
+function onTaskRemove(event) {
+    const button = event.target;
+    const id = button.dataset.task
 }

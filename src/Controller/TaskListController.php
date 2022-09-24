@@ -22,12 +22,13 @@ class TaskListController extends AbstractController
         $boardId = $request->get('boardId');
         $board = $boardRepository->find($boardId);
 
+        $this->denyAccessUnlessGranted('edit', $board);
+
         $taskListId = (int)$request->get('taskListId');
         if ($taskListId === 0) {
             $taskList = new TaskList();
         } else {
             $taskList = $taskListRepository->find($taskListId);
-            $this->denyAccessUnlessGranted('edit', $board);
         }
 
         $taskList->setBoard($board);
