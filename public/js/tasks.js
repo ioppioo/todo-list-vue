@@ -23,6 +23,77 @@ function onTaskRemove(event) {
     task.remove();
 }
 
+//удаление списка задач
+
+document.querySelectorAll('.js-note-remove')
+    .forEach(button => {
+        button.addEventListener('click', onTaskListRemove)
+    });
+
+function onTaskListRemove(event) {
+    const button = event.target;
+    const taskList = button.closest('.note');
+    // const board = taskList.parentNode;
+    const id = taskList.dataset.taskListId;
+    window.api
+        .removeTaskList(id)
+        .then(response => {
+            if (!response.ok) {
+                board.appendChild(taskList);
+            }
+        })
+        .catch(reason => {
+            console.error(reason);
+        });
+    taskList.remove();
+}
+
+//удаление доски
+
+document.querySelectorAll('.js-board-remove')
+    .forEach(button => {
+        button.addEventListener('click', onBoardRemove)
+    });
+
+function onBoardRemove(event) {
+    const button = event.target;
+    const board = button.closest('.board');
+    const id = board.dataset.boardId;
+    window.api
+        .removeBoard(id)
+        // .then(response => {
+        //     if (!response.ok) {
+        //         // board.appendChild();
+        //     }
+        // })
+        // .catch(reason => {
+        //     console.error(reason);
+        // });
+    board.remove();
+}
+
+
+
+// document.querySelectorAll('.tasks__task-text')
+//     .forEach(button=> {
+//         button.addEventListener('click', onTaskEdit)
+//     });
+//
+// function onTaskEdit(event) {
+//     const button = event.target;
+//     const task = button.closest('.tasks__task');
+//     const taskText = button.closest('.tasks__task-text');
+//     const id = task.dataset.taskId;
+//     window.api
+//         .editTask(id, taskText)
+//         .then((response) => {
+//             console.log(response);
+//         })
+//         .catch(reason => {
+//             console.log(reason);
+//         });
+// }
+
 // // создаем кнопку редактирования
 //
 // function createEditButton() {
@@ -170,14 +241,13 @@ function onTaskRemove(event) {
 //
 //     return input;
 // }
-//
-// // подтверждаем выполнения задачи
-//
-// function taskDone(event) {
-//     let task = event.target.parentElement;
-//     task.classList.toggle('done');
-//     saveNotes();
-// }
+// //
+// // // подтверждаем выполнения задачи
+// //
+// // function taskDone(event) {
+// //     let task = event.target.parentElement;
+// //     task.classList.toggle('done');
+// // }
 //
 // // создаем разметку новой задачи c полем ввода
 //
@@ -202,11 +272,11 @@ function onTaskRemove(event) {
 //     return newTaskButton;
 // }
 //
-// function addTask(event) {
-//     let task = event.target.parentElement.querySelector('.tasks');
-//     createNewTask(task);
-// }
-//
+// // function addTask(event) {
+// //     let task = event.target.parentElement.querySelector('.tasks');
+// //     createNewTask(task);
+// // }
+// //
 // // добавляем кнопку создания новой задачи
 //
 // let notes = document.querySelectorAll(".note");

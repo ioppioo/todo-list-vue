@@ -59,7 +59,7 @@ class TaskController extends AbstractController
             ]);
     }
 
-    #[Route("/tasks/{id}/edit", methods: 'GET')]
+    #[Route("/tasks/{id}", methods: 'PUT')]
     public function editTask(
         TaskRepository $repository,
         int            $id,
@@ -69,12 +69,13 @@ class TaskController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $task->getTaskList()->getBoard());
 
-        return $this->render('todolist/task-edit.html.twig',
-            [
-                'taskId' => $task->getId(),
-                'taskList' => $task->getTaskList(),
-                'taskText' => $task->getText()
-            ]);
+        return $this->json(['status' => 'ok']);
+// $this->render('todolist/task-edit.html.twig',
+//            [
+//                'taskId' => $task->getId(),
+//                'taskList' => $task->getTaskList(),
+//                'taskText' => $task->getText()
+//            ]);
     }
 
     #[Route("/tasks/{id}", methods: 'DELETE')]

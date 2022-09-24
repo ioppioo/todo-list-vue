@@ -87,7 +87,7 @@ class BoardController extends AbstractController
             ]);
     }
 
-    #[Route("/boards/{boardId}/remove")]
+    #[Route("/boards/{boardId}", methods: 'DELETE')]
     public function removeBoard(
         BoardRepository $boardRepository,
         int             $boardId
@@ -99,6 +99,6 @@ class BoardController extends AbstractController
 
         $boardRepository->remove( $board, true);
 
-        return $this->redirect('/boards');
+        return $this->json(['status' => 'ok']);
     }
 }
