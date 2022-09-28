@@ -70,7 +70,7 @@ class BoardController extends AbstractController
         );
     }
 
-    #[Route("/boards/{boardId}/edit", methods: "GET")]
+    #[Route("/boards/{boardId}/edit", methods: "PUT")]
     public function editBoard(
         BoardRepository $boardRepository,
         int             $boardId
