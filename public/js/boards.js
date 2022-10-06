@@ -1,57 +1,3 @@
-//отрисовка кнопки удаления доски
-
-function createButtonRemove() {
-    let createButtonRemove = document.createElement('button');
-    createButtonRemove.className = 'button button-board-remove js-board-remove';
-    createButtonRemove.innerText = '🞫';
-
-    createButtonRemove.onclick = function () {
-        createButtonRemove.parentElement.remove();
-
-        const button = event.target;
-        const board = button.closest('.board');
-        const id = board.dataset.boardId;
-
-        window.api
-            .removeBoard(id)
-            .then(response => {
-                if (!response.ok) {
-                    // board.appendChild();
-                }
-            })
-            .catch(reason => {
-                console.error(reason);
-            });
-        board.remove();
-    }
-
-    return createButtonRemove;
-}
-
-//удаление доски
-
-document.querySelectorAll('.js-board-remove')
-    .forEach(button => {
-        button.addEventListener('click', onBoardRemove)
-    });
-
-function onBoardRemove(event) {
-    const button = event.target;
-    const board = button.closest('.board');
-    const id = board.dataset.boardId;
-    window.api
-        .removeBoard(id)
-        .then(response => {
-            if (!response.ok) {
-                // board.appendChild();
-            }
-        })
-        .catch(reason => {
-            console.error(reason);
-        });
-    board.remove();
-}
-
 //редактирование заголовка доски
 
 document.querySelectorAll('.js-board-edit')
@@ -90,7 +36,6 @@ function createEditButton() {
 function createEditTitleButton() {
     let button = createEditButton();
     button.addEventListener('click', createTitleText);
-    // saveNotes();
 
     return button;
 }
@@ -199,7 +144,6 @@ function createNewBoard() {
             });
     });
 
-
     titleNote.appendChild(titleInput);
     divNote.appendChild(titleNote);
 
@@ -208,29 +152,83 @@ function createNewBoard() {
 
 // добавление новой доски
 
-function createNoteButton() {
-    let newNoteButton = document.querySelector('.boards-board-new');
-    newNoteButton.onclick = function (event) {
+function createBoardButton() {
+    let newBoardButton = document.querySelector('.boards-board-new');
+    newBoardButton.onclick = function (event) {
         let note = event.target.parentElement;
         createNewBoard(note);
     }
 
-    return newNoteButton;
+    return newBoardButton;
 }
 
-createNoteButton();
+createBoardButton();
 
-// цвет новой доски
+// // цвет новой доски
+//
+// function replaceNoteColor() {
+//     let colors = [
+//         'board--indianred',
+//         'board--lavender',
+//         'board--antiquewhite',
+//         'board--teal',
+//     ];
+//
+//     let randomIndex = Math.floor(Math.random() * colors.length);
+//
+//     return colors[randomIndex];
+// }
 
-function replaceNoteColor() {
-    let colors = [
-        'board--indianred',
-        'board--lavender',
-        'board--antiquewhite',
-        'board--teal',
-    ];
+//отрисовка кнопки удаления доски
 
-    let randomIndex = Math.floor(Math.random() * colors.length);
+function createButtonRemove() {
+    let createButtonRemove = document.createElement('button');
+    createButtonRemove.className = 'button button-board-remove js-board-remove';
+    createButtonRemove.innerText = '🞫';
 
-    return colors[randomIndex];
+    createButtonRemove.onclick = function () {
+        createButtonRemove.parentElement.remove();
+
+        const button = event.target;
+        const board = button.closest('.board');
+        const id = board.dataset.boardId;
+
+        window.api
+            .removeBoard(id)
+            .then(response => {
+                if (!response.ok) {
+                    // board.appendChild();
+                }
+            })
+            .catch(reason => {
+                console.error(reason);
+            });
+        board.remove();
+    }
+
+    return createButtonRemove;
+}
+
+//удаление доски
+
+document.querySelectorAll('.js-board-remove')
+    .forEach(button => {
+        button.addEventListener('click', onBoardRemove)
+    });
+
+function onBoardRemove(event) {
+    const button = event.target;
+    const board = button.closest('.board');
+    const id = board.dataset.boardId;
+    window.api
+        .removeBoard(id)
+        .then(response => {
+            if (!response.ok) {
+                // board.appendChild();
+            }
+        })
+        .catch(reason => {
+            console.error(reason);
+        });
+    board.remove();
 }

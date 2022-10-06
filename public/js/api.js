@@ -28,13 +28,24 @@ window.api = {
         return api.request(`/boards/${id}`, 'DELETE');
     },
 
-
-    removeTaskList(taskListId) {
-        return api.request(`/task-lists/${taskListId}`, 'DELETE');
+    saveTaskList(id, title) {
+        return api.request('/task-lists', 'POST', {title});
     },
 
-    editTask(id, title) {
-        return api.request(`/tasks/${id}`, 'PUT', {title});
+    editTaskList(id, title) {
+        return api.request(`/task-lists/${id}`, 'PUT', {title});
+    },
+
+    removeTaskList(id) {
+        return api.request(`/task-lists/${id}`, 'DELETE');
+    },
+
+    saveTask(id, task) {
+        return api.request(`/tasks`, 'POST', {task});
+    },
+
+    editTask(id, task) {
+        return api.request(`/tasks/${id}`, 'PUT', {task});
     },
 
     removeTask(id) {

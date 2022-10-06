@@ -36,12 +36,12 @@ class BoardController extends AbstractController
     #[Route("/boards/create", methods: 'GET')]
     public function create()
     {
-        return $this->render('todolist/boards-edit.html.twig',
-            [
-                'boardId' => 0,
-                'boardTitle' => ""
-            ]
-        );
+//        return $this->render('todolist/boards-edit.html.twig',
+//            [
+//                'boardId' => 0,
+//                'boardTitle' => ""
+//            ]
+//        );
     }
 
     #[Route("/boards", methods: "GET")]

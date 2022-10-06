@@ -36,10 +36,11 @@ class TaskListController extends AbstractController
         $taskList->setTitle($request->get('title'));
         $taskListRepository->add($taskList, true);
 
-        return $this->redirect("/boards/{$boardId}");
+        return $this->json(['status' => 'ok']);
+//        return $this->redirect("/boards/{$boardId}");
     }
 
-    #[Route("/boards/{boardId}/task-lists/create", methods: 'GET')]
+    #[Route("/boards/{boardId}", methods: 'GET')]
     public function create(
         BoardRepository $boardRepository,
         int             $boardId
@@ -49,15 +50,17 @@ class TaskListController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $board);
 
-        return $this->render('todolist/task-list-edit.html.twig',
-            [
-                'taskListId' => 0,
-                'boardId' => $board->getId(),
-                'title' => ""
-            ]);
+        return $this->json(['status' => 'ok']);
+
+//        return $this->render('todolist/task-list-edit.html.twig',
+//            [
+//                'taskListId' => 0,
+//                'boardId' => $board->getId(),
+//                'title' => ""
+//            ]);
     }
 
-    #[Route("/task-lists/{taskListId}/edit", methods: 'GET')]
+    #[Route("/task-lists/{taskListId}", methods: 'PUT')]
     public function editTaskList(
         TaskListRepository $taskListRepository,
         int                $taskListId,
@@ -68,12 +71,13 @@ class TaskListController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $board);
 
-        return $this->render('todolist/task-list-edit.html.twig',
-            [
-                'boardId' => $board->getId(),
-                'taskListId' => $taskList->getId(),
-                'title' => $taskList->getTitle()
-            ]);
+        return $this->json(['status' => 'ok']);
+//        return $this->render('todolist/task-list-edit.html.twig',
+//            [
+//                'boardId' => $board->getId(),
+//                'taskListId' => $taskList->getId(),
+//                'title' => $taskList->getTitle()
+//            ]);
     }
 
     #[Route("/task-lists/{taskListId}", methods: 'DELETE')]
