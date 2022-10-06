@@ -80,11 +80,12 @@ class BoardController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $board);
 
-        return $this->render('todolist/boards-edit.html.twig',
-            [
-                'boardId' => $board->getId(),
-                'boardTitle' => $board->getTitle()
-            ]);
+        return $this->json(['status' => 'ok']);
+//        return $this->render('todolist/boards-edit.html.twig',
+//            [
+//                'boardId' => $board->getId(),
+//                'boardTitle' => $board->getTitle()
+//            ]);
     }
 
     #[Route("/boards/{boardId}", methods: 'DELETE')]

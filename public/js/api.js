@@ -20,28 +20,29 @@ window.api = {
         return api.request('/boards', 'POST', {title});
     },
 
-    loadBoards(id, title) {
-        return api.request('/boards', 'GET', {title});
-    },
-
     editBoard(id, title) {
         return api.request(`/boards/${id}`, 'PUT', {title});
     },
-
-    editTask(id, title) {
-        return api.request(`/tasks/${id}`, 'PUT', {title});
-    }
-    ,
 
     removeBoard(id) {
         return api.request(`/boards/${id}`, 'DELETE');
     },
 
+
     removeTaskList(taskListId) {
         return api.request(`/task-lists/${taskListId}`, 'DELETE');
+    },
+
+    editTask(id, title) {
+        return api.request(`/tasks/${id}`, 'PUT', {title});
     },
 
     removeTask(id) {
         return api.request(`/tasks/${id}`, 'DELETE');
     },
+
+    loadBoards(id, title) {
+        return api.request('/boards', 'GET', {title});
+    },
+
 };

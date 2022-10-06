@@ -1,9 +1,72 @@
-let currentBoardId = 1;
+//отрисовка кнопки удаления доски
 
-function onEditBoardTitle(event) {
+function createButtonRemove() {
+    let createButtonRemove = document.createElement('button');
+    createButtonRemove.className = 'button button-board-remove js-board-remove';
+    createButtonRemove.innerText = '🞫';
+
+    createButtonRemove.onclick = function () {
+        createButtonRemove.parentElement.remove();
+
+        const button = event.target;
+        const board = button.closest('.board');
+        const id = board.dataset.boardId;
+
+        window.api
+            .removeBoard(id)
+            .then(response => {
+                if (!response.ok) {
+                    // board.appendChild();
+                }
+            })
+            .catch(reason => {
+                console.error(reason);
+            });
+        board.remove();
+    }
+
+    return createButtonRemove;
+}
+
+//удаление доски
+
+document.querySelectorAll('.js-board-remove')
+    .forEach(button => {
+        button.addEventListener('click', onBoardRemove)
+    });
+
+function onBoardRemove(event) {
+    const button = event.target;
+    const board = button.closest('.board');
+    const id = board.dataset.boardId;
+    window.api
+        .removeBoard(id)
+        .then(response => {
+            if (!response.ok) {
+                // board.appendChild();
+            }
+        })
+        .catch(reason => {
+            console.error(reason);
+        });
+    board.remove();
+}
+
+//редактирование заголовка доски
+
+document.querySelectorAll('.js-board-edit')
+    .forEach(button => {
+        button.addEventListener('click', onBoardEditTitle)
+    });
+
+function onBoardEditTitle(event) {
+    const button = event.target;
     const input = event.target;
+    const board = button.closest('.board');
+    const id = board.dataset.boardId;
     const title = input.value;
-    api.editBoard(currentBoardId, title)
+    window.api
+        .editBoard(id, title)
         .then((response) => {
             console.log(response);
         })
@@ -12,13 +75,11 @@ function onEditBoardTitle(event) {
         });
 }
 
-// input.onblur = onEditBoardTitle;
-
 // создаем кнопку редактирования
 
 function createEditButton() {
     let editButton = document.createElement('button');
-    editButton.className = 'button edit-button';
+    editButton.className = 'button button-edit js-board-edit';
     editButton.innerText = '✎';
 
     return editButton;
@@ -48,7 +109,7 @@ function replaceTitleWithInput(title) {
     let rows = (titleText.getBoundingClientRect().height / parseInt(styles.lineHeight));
     const oldTitle = titleText.innerText;
     let input = createTitleInput(oldTitle, rows, (newTitle) => {
-        api.editBoard(1, newTitle)
+        api.editBoard(11, newTitle)
             .catch((reason) => {
                 console.error(reason);
                 const titleText = title.querySelector('.board-title-text');
@@ -69,16 +130,19 @@ function createTitleInput(text, rows, handler) {
         replaceTitleWithInputText(input);
     };
 
-
     return input;
 }
 
 function createEditNewTitleText(text) {
+    let link = document.createElement('a');
+    link.setAttribute('href', '/boards/{{ board.id }}');
     let titleText = document.createElement('span');
-    titleText.classList.add('board-title-text');
+    titleText.className = 'board-title-text';
     titleText.innerText = text.trim();
 
-    return titleText;
+    link.appendChild(titleText);
+
+    return link;
 }
 
 function replaceTitleWithInputText(input) {
@@ -86,7 +150,7 @@ function replaceTitleWithInputText(input) {
     let title = input.parentElement;
     if (newText.trim() === '') {
         title.closest('.board').remove();
-        }
+    }
     else {
         title.innerHTML = '';
         title.appendChild(createEditNewTitleText(newText));
@@ -105,46 +169,50 @@ function createInput(text, rows) {
     return input;
 }
 
-// добавляем кнопку удаления доски
-
-let notes = document.querySelectorAll('.board');
-
-for (let button of notes) {
-    button.appendChild(createDelButton());
+// добавляем кнопку удаления доски для каждой новой доски
+let boards = document.querySelectorAll('.board');
+for (let button of boards) {
+    button.appendChild(createButtonRemove());
 }
 
-// добавляет новую заметку
-
-function createNewNote() {
+//добавление новой доски
+function createNewBoard() {
     let newNote = document.querySelector('.boards-board-new');
     let divNote = document.createElement('div');
-    let color = replaceNoteColor();
+    // let color = replaceNoteColor();
 
     divNote.classList.add('board');
-    divNote.classList.toggle(color);
+    divNote.dataset.boardId = "{{ board.id }}";
+    // divNote.classList.toggle(color);
 
     newNote.after(divNote);
-    divNote.append(createDelButton());
+    divNote.append(createButtonRemove());
 
-// добавляем заголовок новой заметки
+// добавляем заголовок доски
+
     let titleNote = document.createElement('div');
     titleNote.classList.add('board-title');
-    let titleInput = createTitleInput('', 1, () => {
-        api.saveBoards();
+    let titleInput = createTitleInput('', 1, (title) => {
+        api.saveBoards(1, title)
+            .catch((reason) => {
+                console.log(reason);
+            });
     });
+
+
     titleNote.appendChild(titleInput);
     divNote.appendChild(titleNote);
 
     titleInput.focus();
 }
 
-// добавление новой заметки
+// добавление новой доски
 
 function createNoteButton() {
     let newNoteButton = document.querySelector('.boards-board-new');
     newNoteButton.onclick = function (event) {
         let note = event.target.parentElement;
-        createNewNote(note);
+        createNewBoard(note);
     }
 
     return newNoteButton;
@@ -152,7 +220,7 @@ function createNoteButton() {
 
 createNoteButton();
 
-// цвет новой заметки
+// цвет новой доски
 
 function replaceNoteColor() {
     let colors = [
@@ -165,91 +233,4 @@ function replaceNoteColor() {
     let randomIndex = Math.floor(Math.random() * colors.length);
 
     return colors[randomIndex];
-}
-
-// кнопка удаления заметки
-
-function createDelButton() {
-    let createDelButton = document.createElement('button');
-    createDelButton.className = 'button button-task-del';
-    createDelButton.innerText = '🞫';
-    createDelButton.onclick = function () {
-        createDelButton.parentElement.remove();
-
-        api.deleteBoard(1, title);
-    }
-
-    return createDelButton;
-}
-
-//создание массива объектов
-
-function createTodos() {
-    let todoList = [];
-    let todos = document.querySelectorAll('.board');
-
-    for (const todo of todos) {
-        const note = {
-            color: todo.classList[1],
-            title: todo.querySelector('.board-title-text').innerText.trim()
-        }
-        todoList.push(note);
-    }
-
-    return todoList;
-}
-
-//сохранение бордов в JSON
-
-// function saveNotes () {
-//     localStorage.setItem('todos', JSON.stringify(createTodos()));
-// }
-
-let saveBoard;
-if (saveBoard) {
-    saveBoard.forEach();
-}
-
-// let saveBoard;
-// if (saveBoard) {
-//     saveBoard.forEach(loadNote);
-// }
-
-//загрузка бордов из JSON
-
-let savedNotes = JSON.parse(localStorage.getItem('todos'));
-if (savedNotes) {
-    savedNotes.forEach(loadNote);
-}
-
-// загрузка из localstorage
-
-function loadNote(note) {
-
-    // создаем заметку
-    let newNote = document.querySelector('.boards-board-new');
-    let divNote = document.createElement('div');
-
-    // подгружаем цвет заметки
-    divNote.classList.add('note');
-    divNote.classList.toggle(note.color);
-
-    // добавляем заголовок заметки
-    let titleNote = document.createElement('div');
-    titleNote.classList.add('board-title');
-
-    let titleText = createEditNewTitleText(note.title);
-    titleNote.appendChild(titleText);
-    titleNote.append(createEditTitleButtonToLocal())
-
-    newNote.after(divNote);
-    divNote.append(createDelButton());
-    divNote.appendChild(titleNote);
-}
-
-function createEditTitleButtonToLocal() {
-    let button = createEditButton();
-    button.addEventListener('click', createTitleText);
-
-    return button;
 }

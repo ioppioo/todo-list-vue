@@ -15,22 +15,22 @@
             </div>
         </div>
 
-        {#        {% for board in boards %} #}
+                {% for board in boards %}
 
-        {#            <div class="board" data-board-id="{{ board.id }}"> #}
-        {#                <button class="button button-task-del js-board-remove">🞫</button> #}
-        {#                <div class="board-title"> #}
-        {#                    <a href="/boards/{{ board.id }}"> #}
-        {#                        <span class="board-title-text" #}
-        {#                              data-board-title="{{ board.title }}"> #}
-        {#                            {{ board.title }} #}
-        {#                        </span> #}
-        {#                    </a> #}
-        {#                    <button class="button button-edit js-board-edit">✎</button> #}
-        {#                </div> #}
-        {#            </div> #}
+                    <div class="board" data-board-id="{{ board.id }}">
+                        <button class="button button-task-del js-board-remove">🞫</button>
+                        <div class="board-title">
+                            <a href="/boards/{{ board.id }}">
+                                <span class="board-title-text"
+                                      data-board-title="{{ board.title }}">
+                                    {{ board.title }}
+                                </span>
+                            </a>
+                            <button class="button button-edit js-board-edit">✎</button>
+                        </div>
+                    </div>
 
-        {#        {% endfor %} #}
+                {% endfor %}
     </div>
 
 {% endblock %}
