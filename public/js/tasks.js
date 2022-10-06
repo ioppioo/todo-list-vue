@@ -139,8 +139,9 @@ function createNewTask(task) {
 
 function createNewTaskButton() {
     let newTaskButton = document.createElement('button');
-    newTaskButton.className = 'button button-task-new';
+    newTaskButton.className = 'button button-task-new js-task-create';
     newTaskButton.innerText = '+';
+
     newTaskButton.onclick = addTask;
 
     return newTaskButton;
@@ -150,7 +151,6 @@ function addTask(event) {
     let task = event.target.parentElement.querySelector('.tasks');
     createNewTask(task);
 }
-
 
 // добавляем кнопку создания новой задачи
 
