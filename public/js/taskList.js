@@ -23,7 +23,7 @@ function onTaskListTitleEdit(event) {
 
 // создаем кнопку редактирования
 
-function createEditButton() {
+function createTaskListEditButton() {
     let editButton = document.createElement('button');
     editButton.className = 'button button-edit js-task-list-edit';
     editButton.innerText = '✎';
@@ -33,28 +33,30 @@ function createEditButton() {
 
 // для работы с заголовком
 
-function createEditTitleButton() {
-    let button = createEditButton();
-    button.addEventListener('click', createTitleText);
+function createEditTaskListButton() {
+    let button = createTaskListEditButton();
+    button.addEventListener('click', createTaskListTitleText);
 
     return button;
 }
 
-function createTitleText(event) {
+function createTaskListTitleText(event) {
     event.stopPropagation();
     let note = event.target.parentElement;
-    replaceTitleWithInput(note);
+    replaceTaskListTitleWithInput(note);
 }
 
 // заменяем текущий заголовок заметки полем ввода
 
-function replaceTitleWithInput(title) {
+function replaceTaskListTitleWithInput(title) {
     let titleText = title.querySelector('.title-note-text');
     let styles = window.getComputedStyle(titleText);
     let rows = (titleText.getBoundingClientRect().height / parseInt(styles.lineHeight));
     const oldTitle = titleText.innerText;
-    let input = createTitleInput(oldTitle, rows, (newTitle) => {
-        api.editTaskList(11, newTitle)
+    const taskLists = title.closest('.note');
+    const id = taskLists.dataset.taskListId;
+    let input = createTaskListTitleInput(oldTitle, rows, (newTitle) => {
+        api.editTaskList(id, newTitle)
             .catch((reason) => {
                 console.error(reason);
                 const titleText = title.querySelector('.title-note-text');
@@ -68,17 +70,17 @@ function replaceTitleWithInput(title) {
 
 // создаем новый текст заголовка
 
-function createTitleInput(text, rows, handler) {
+function createTaskListTitleInput(text, rows, handler) {
     let input = createInput(text, rows);
     input.onblur = () => {
         handler(input.value);
-        replaceTitleWithInputText(input);
+        replaceTaskListTitleWithInputText(input);
     };
 
     return input;
 }
 
-function createEditNewTitleText(text) {
+function createTaskListText(text) {
     let titleText = document.createElement('span');
     titleText.className = 'title-note-text';
     titleText.innerText = text.trim();
@@ -86,34 +88,16 @@ function createEditNewTitleText(text) {
     return titleText;
 }
 
-function replaceTitleWithInputText(input) {
+function replaceTaskListTitleWithInputText(input) {
     let newText = input.value;
     let title = input.parentElement;
     if (newText.trim() === '') {
         title.closest('.note').remove();
     } else {
         title.innerHTML = '';
-        title.appendChild(createEditNewTitleText(newText));
-        title.appendChild(createEditTitleButton());
+        title.appendChild(createTaskListText(newText));
+        title.appendChild(createEditTaskListButton());
     }
-}
-
-//создаем поле ввода
-
-function createInput(text, rows) {
-    let input = document.createElement('textarea');
-    input.value = text;
-    input.rows = rows;
-    input.classList.add('input');
-
-    return input;
-}
-
-// добавляем кнопку удаления для списка задач
-
-let taskLists = document.querySelectorAll('.note');
-for (let button of taskLists) {
-    button.appendChild(createButtonRemove());
 }
 
 //добавление нового списка задач
@@ -128,14 +112,18 @@ function createTaskList() {
     // divNote.classList.toggle(color);
 
     newTaskList.after(divNote);
-    // divNote.append(createButtonRemove());
+
+    divNote.append(createNewTaskButton());
+    // divNote.append(createTaskListButtonRemove());
 
 // добавляем заголовок списка задач
 
     let titleNote = document.createElement('div');
     titleNote.classList.add('title-note');
-    let titleInput = createTitleInput('', 1, (title) => {
-        api.saveTaskList(1, title)
+
+    const id = divNote.dataset.taskListId;
+    let titleInput = createTaskListTitleInput('', 1, (title) => {
+        api.saveTaskList(id, title)
             .catch((reason) => {
                 console.log(reason);
             });
@@ -180,6 +168,14 @@ createTaskListButton();
 //     let randomIndex = Math.floor(Math.random() * colors.length);
 //
 //     return colors[randomIndex];
+// }
+
+// function createTaskListButtonRemove() {
+//     let createButtonRemove = document.createElement('button');
+//     createButtonRemove.className = 'button button-task-del js-note-remove';
+//     createButtonRemove.innerText = '🞫';
+//
+//     return createButtonRemove;
 // }
 
 //удаление списка задач

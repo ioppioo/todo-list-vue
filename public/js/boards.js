@@ -2,29 +2,13 @@
 
 document.querySelectorAll('.js-board-edit')
     .forEach(button => {
-        button.addEventListener('click', onBoardEditTitle)
+        button.addEventListener('click', createBoardTitleText)
     });
-
-function onBoardEditTitle(event) {
-    const button = event.target;
-    const input = event.target;
-    const board = button.closest('.board');
-    const id = board.dataset.boardId;
-    const title = input.value;
-    window.api
-        .editBoard(id, title)
-        .then((response) => {
-            console.log(response);
-        })
-        .catch(reason => {
-            console.error(reason);
-        });
-}
 
 // создаем кнопку редактирования
 
-function createEditButton() {
-    let editButton = document.createElement('button');
+function createBoardEditButton() {
+    const editButton = document.createElement('button');
     editButton.className = 'button button-edit js-board-edit';
     editButton.innerText = '✎';
 
@@ -33,28 +17,33 @@ function createEditButton() {
 
 // для работы с заголовком
 
-function createEditTitleButton() {
-    let button = createEditButton();
-    button.addEventListener('click', createTitleText);
+function createEditBoardTitleButton() {
+    let button = createBoardEditButton();
+    button.addEventListener('click', createBoardTitleText);
 
     return button;
 }
 
-function createTitleText(event) {
+function createBoardTitleText(event) {
     event.stopPropagation();
     let note = event.target.parentElement;
-    replaceTitleWithInput(note);
+    replaceBoardTitleWithInput(note);
 }
 
 // заменяем текущий заголовок заметки полем ввода
 
-function replaceTitleWithInput(title) {
+function replaceBoardTitleWithInput(title) {
     let titleText = title.querySelector('.board-title-text');
     let styles = window.getComputedStyle(titleText);
     let rows = (titleText.getBoundingClientRect().height / parseInt(styles.lineHeight));
     const oldTitle = titleText.innerText;
-    let input = createTitleInput(oldTitle, rows, (newTitle) => {
-        api.editBoard(11, newTitle)
+    const board = title.closest('.board');
+    const id = board.dataset.boardId;
+    let input = createBoardTitleInput(oldTitle, rows, (newTitle) => {
+        api.editBoard(id, newTitle)
+            .then((response) => {
+                console.log(response);
+            })
             .catch((reason) => {
                 console.error(reason);
                 const titleText = title.querySelector('.board-title-text');
@@ -68,17 +57,17 @@ function replaceTitleWithInput(title) {
 
 // создаем новый текст заголовка
 
-function createTitleInput(text, rows, handler) {
+function createBoardTitleInput(text, rows, handler) {
     let input = createInput(text, rows);
     input.onblur = () => {
         handler(input.value);
-        replaceTitleWithInputText(input);
+        replaceBoardTitleWithInputText(input);
     };
 
     return input;
 }
 
-function createEditNewTitleText(text) {
+function createBoardText(text) {
     let link = document.createElement('a');
     link.setAttribute('href', '/boards/{{ board.id }}');
     let titleText = document.createElement('span');
@@ -90,16 +79,15 @@ function createEditNewTitleText(text) {
     return link;
 }
 
-function replaceTitleWithInputText(input) {
+function replaceBoardTitleWithInputText(input) {
     let newText = input.value;
     let title = input.parentElement;
     if (newText.trim() === '') {
         title.closest('.board').remove();
-    }
-    else {
+    } else {
         title.innerHTML = '';
-        title.appendChild(createEditNewTitleText(newText));
-        title.appendChild(createEditTitleButton());
+        title.appendChild(createBoardText(newText));
+        title.appendChild(createEditBoardTitleButton());
     }
 }
 
@@ -114,12 +102,6 @@ function createInput(text, rows) {
     return input;
 }
 
-// добавляем кнопку удаления доски для каждой новой доски
-let boards = document.querySelectorAll('.board');
-for (let button of boards) {
-    button.appendChild(createButtonRemove());
-}
-
 //добавление новой доски
 function createNewBoard() {
     let newNote = document.querySelector('.boards-board-new');
@@ -127,18 +109,24 @@ function createNewBoard() {
     // let color = replaceNoteColor();
 
     divNote.classList.add('board');
-    divNote.dataset.boardId = "{{ board.id }}";
     // divNote.classList.toggle(color);
 
     newNote.after(divNote);
-    divNote.append(createButtonRemove());
+    divNote.append(createBoardButtonRemove());
 
 // добавляем заголовок доски
 
     let titleNote = document.createElement('div');
     titleNote.classList.add('board-title');
-    let titleInput = createTitleInput('', 1, (title) => {
-        api.saveBoards(1, title)
+
+    let titleInput = createBoardTitleInput('', 1, (title) => {
+        api.createBoard(title)
+            .then((response)=> {
+                return response.json();
+            })
+            .then((data) => {
+                divNote.dataset.boardId = data.data.boardId;
+            })
             .catch((reason) => {
                 console.log(reason);
             });
@@ -181,30 +169,10 @@ createBoardButton();
 
 //отрисовка кнопки удаления доски
 
-function createButtonRemove() {
+function createBoardButtonRemove() {
     let createButtonRemove = document.createElement('button');
-    createButtonRemove.className = 'button button-board-remove js-board-remove';
+    createButtonRemove.className = 'button button-task-del js-board-remove';
     createButtonRemove.innerText = '🞫';
-
-    createButtonRemove.onclick = function () {
-        createButtonRemove.parentElement.remove();
-
-        const button = event.target;
-        const board = button.closest('.board');
-        const id = board.dataset.boardId;
-
-        window.api
-            .removeBoard(id)
-            .then(response => {
-                if (!response.ok) {
-                    // board.appendChild();
-                }
-            })
-            .catch(reason => {
-                console.error(reason);
-            });
-        board.remove();
-    }
 
     return createButtonRemove;
 }

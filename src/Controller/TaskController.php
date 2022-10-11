@@ -51,15 +51,16 @@ class TaskController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $taskList->getBoard());
 
-        return $this->render('todolist/task-edit.html.twig',
-            [
-                'taskId' => 0,
-                'taskList' => $taskList,
-                'taskText' => ""
-            ]);
+        return $this->json(['status' => 'ok']);
+//        return $this->render('todolist/task-edit.html.twig',
+//            [
+//                'taskId' => 0,
+//                'taskList' => $taskList,
+//                'taskText' => ""
+//            ]);
     }
 
-    #[Route("/tasks/{id}", methods: 'PUT')]
+    #[Route("/tasks/{id}/edit", methods: 'PUT')]
     public function editTask(
         TaskRepository $repository,
         int            $id,

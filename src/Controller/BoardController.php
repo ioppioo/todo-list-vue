@@ -18,33 +18,24 @@ class BoardController extends AbstractController
         Request         $request
     )
     {
-        $boardId = (int)$request->get('boardId');
-        if ($boardId === 0) {
-            $board = new Board();
-        } else {
-            $board = $boardRepository->find($boardId);
-            $this->denyAccessUnlessGranted('edit', $board);
-        }
+        $board = new Board();
 
         $board->setUser($this->getUser());
         $board->setTitle($request->get('title'));
         $boardRepository->add($board, true);
+        $boardId = $board->getId();
 
-        return $this->redirect("/boards");
+        return $this->json(['status' => 'ok', 'data' => ['boardId' => $boardId]]);
+//        return $this->redirect("/boards");
     }
 
     #[Route("/boards/create", methods: 'GET')]
     public function create()
     {
-//        return $this->render('todolist/boards-edit.html.twig',
-//            [
-//                'boardId' => 0,
-//                'boardTitle' => ""
-//            ]
-//        );
+
     }
 
-    #[Route("/boards", methods: "GET")]
+    #[Route("/boards", methods: 'GET')]
     public function getBoardsList()
     {
         /** @var User $user */
@@ -58,7 +49,7 @@ class BoardController extends AbstractController
         );
     }
 
-    #[Route("/boards/{id}", methods: "GET")]
+    #[Route("/boards/{id}", methods: 'GET')]
     public function getBoard(Board $board)
     {
         $this->denyAccessUnlessGranted('view', $board);
@@ -70,22 +61,22 @@ class BoardController extends AbstractController
         );
     }
 
-    #[Route("/boards/{boardId}/edit", methods: "PUT")]
+    #[Route("/boards/{boardId}", methods: 'PUT')]
     public function editBoard(
         BoardRepository $boardRepository,
-        int             $boardId
+        int             $boardId,
+        Request         $request
     ): Response
     {
         $board = $boardRepository->find($boardId);
 
+        $board->setTitle($request->get('title'));
+        $boardRepository->add($board, true);
+
         $this->denyAccessUnlessGranted('edit', $board);
 
-        return $this->json(['status' => 'ok']);
-//        return $this->render('todolist/boards-edit.html.twig',
-//            [
-//                'boardId' => $board->getId(),
-//                'boardTitle' => $board->getTitle()
-//            ]);
+
+        return $this->json(['status' => 'ok', 'data' => ['boardId' => $boardId]]);
     }
 
     #[Route("/boards/{boardId}", methods: 'DELETE')]

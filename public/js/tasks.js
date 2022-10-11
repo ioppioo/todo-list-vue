@@ -7,9 +7,10 @@ document.querySelectorAll('.js-task-edit')
 
 function onTaskEdit(event) {
     const button = event.target;
+    const input = event.target;
     const task = button.closest('.tasks__task');
-    const taskText = button.closest('.tasks__task-text');
     const id = task.dataset.taskId;
+    const taskText = input.value;
     window.api
         .editTask(id, taskText)
         .then((response) => {
@@ -22,7 +23,7 @@ function onTaskEdit(event) {
 
 // создаем кнопку редактирования
 
-function createEditButton() {
+function createTaskEditButton() {
     let editButton = document.createElement('button');
     editButton.className = 'button button-edit js-task-edit';
     editButton.innerText = '✎';
@@ -33,7 +34,7 @@ function createEditButton() {
 // для работы с задачами
 
 function createEditTaskButton() {
-    let button = createEditButton();
+    let button = createTaskEditButton();
     button.addEventListener('click', createTaskText);
 
     return button;
@@ -53,10 +54,10 @@ function replaceTaskWithInput(task) {
     let rows = (taskText.getBoundingClientRect().height / parseInt(styles.lineHeight));
     const oldText = taskText.innerText;
     let input = createTaskInput(oldText, rows, (newText) => {
-        api.editBoard(11, newText)
+        api.editTask(11, newText)
             .catch((reason) => {
                 console.error(reason);
-                const taskText = task.querySelector('.board-title-text');
+                const taskText = task.querySelector('.tasks__task-text');
                 taskText.innerHTML = oldText;
             });
     });
@@ -88,7 +89,7 @@ function createEditNewTaskText(text) {
     return taskText;
 }
 // заменяем поле ввода на новый текст, если текста нет, то удаляем. Добавляем конпку редактирования.
-function replaceInputWithTask(event) {
+function replaceInputWithTask(input) {
     let newText = input.value;
     let task = input.parentElement;
     if (newText.trim() === '') {
@@ -100,17 +101,6 @@ function replaceInputWithTask(event) {
     }
 }
 
-//создаем поле ввода
-
-function createInput(text, rows) {
-    let input = document.createElement('textarea');
-    input.value = text;
-    input.rows = rows;
-    input.classList.add('input');
-
-    return input;
-}
-//
 // // подтверждаем выполнения задачи
 //
 // function taskDone(event) {
@@ -121,14 +111,14 @@ function createInput(text, rows) {
 // создаем разметку новой задачи c полем ввода
 function createNewTask(task) {
     let li = document.createElement('li');
+    li.classList.add('tasks__task');
     let taskInput = createTaskInput('', 1, (task) => {
-        api.saveTask(1, task)
+        window.api.saveTasks(1, task)
             .catch((reason) => {
                 console.log(reason);
             });
     });
 
-    li.classList.add('tasks__task');
     li.appendChild(taskInput);
     task.appendChild(li);
 
@@ -142,24 +132,23 @@ function createNewTaskButton() {
     newTaskButton.className = 'button button-task-new js-task-create';
     newTaskButton.innerText = '+';
 
-    newTaskButton.onclick = addTask;
+    newTaskButton.onclick = function (event) {
+        let task = event.target.parentElement.querySelector('.tasks');
+        createNewTask(task);
+    };
 
     return newTaskButton;
 }
 
-function addTask(event) {
-    let task = event.target.parentElement.querySelector('.tasks');
-    createNewTask(task);
-}
 
 // добавляем кнопку создания новой задачи
 
-// let notes = document.querySelectorAll(".note");
-//
-// for (let button of notes) {
-//     button.appendChild(createNewTaskButton());
-//     button.appendChild(createDelButton());
-// }
+let notes = document.querySelectorAll(".note");
+
+for (let button of notes) {
+    button.appendChild(createNewTaskButton());
+    // button.appendChild(createTaskListButtonRemove());
+}
 
 //удаление задачи
 

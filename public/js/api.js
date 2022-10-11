@@ -16,7 +16,7 @@ window.api = {
         return fetch(url, params);
     },
 
-    saveBoards(id, title) {
+    createBoard(title) {
         return api.request('/boards', 'POST', {title});
     },
 
@@ -29,7 +29,7 @@ window.api = {
     },
 
     saveTaskList(id, title) {
-        return api.request('/task-lists', 'POST', {title});
+        return api.request(`/task-lists`, 'POST', {title});
     },
 
     editTaskList(id, title) {
@@ -40,7 +40,7 @@ window.api = {
         return api.request(`/task-lists/${id}`, 'DELETE');
     },
 
-    saveTask(id, task) {
+    saveTasks(id, task) {
         return api.request(`/tasks`, 'POST', {task});
     },
 

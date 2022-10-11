@@ -40,7 +40,7 @@ class TaskListController extends AbstractController
 //        return $this->redirect("/boards/{$boardId}");
     }
 
-    #[Route("/boards/{boardId}", methods: 'GET')]
+    #[Route("/boards/{boardId}/task-lists/create", methods: 'GET')]
     public function create(
         BoardRepository $boardRepository,
         int             $boardId
@@ -60,7 +60,7 @@ class TaskListController extends AbstractController
 //            ]);
     }
 
-    #[Route("/task-lists/{taskListId}", methods: 'PUT')]
+    #[Route("/task-lists/{taskListId}/edit", methods: 'PUT')]
     public function editTaskList(
         TaskListRepository $taskListRepository,
         int                $taskListId,
