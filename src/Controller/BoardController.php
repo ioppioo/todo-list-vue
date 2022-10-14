@@ -26,7 +26,6 @@ class BoardController extends AbstractController
         $boardId = $board->getId();
 
         return $this->json(['status' => 'ok', 'data' => ['boardId' => $boardId]]);
-//        return $this->redirect("/boards");
     }
 
     #[Route("/boards/create", methods: 'GET')]

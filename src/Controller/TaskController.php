@@ -25,23 +25,19 @@ class TaskController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $taskList->getBoard());
 
-        $boardId = $taskList->getBoard()->getId();
+//        $boardId = $taskList->getBoard()->getId();
 
-        $taskId = (int)$request->get('taskId');
-        if ($taskId === 0) {
-            $task = new Task();
-        } else {
-            $task = $taskRepository->find($taskId);
-        }
+        $task = new Task();
 
         $task->setTaskList($taskList);
         $task->setText($request->get('text'));
         $taskRepository->add($task, true);
+        $id = $task->getId();
 
-        return $this->redirect("/boards/{$boardId}");
+        return $this->json(['status' => 'ok','data' => ['id' => $id]]);
     }
 
-    #[Route("/task-lists/{taskListId}/task/create", methods: 'GET')]
+    #[Route("/task-lists/{taskListId}/task", methods: 'GET')]
     public function createTask(
         TaskListRepository $taskListRepository,
         int                $taskListId,
@@ -51,32 +47,24 @@ class TaskController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $taskList->getBoard());
 
-        return $this->json(['status' => 'ok']);
-//        return $this->render('todolist/task-edit.html.twig',
-//            [
-//                'taskId' => 0,
-//                'taskList' => $taskList,
-//                'taskText' => ""
-//            ]);
+        return $this->json(['status' => 'ok', 'data' => ['taskListId' => $taskListId]]);
     }
 
-    #[Route("/tasks/{id}/edit", methods: 'PUT')]
+    #[Route("/tasks/{id}", methods: 'PUT')]
     public function editTask(
-        TaskRepository $repository,
+        TaskRepository $taskRepository,
         int            $id,
+        Request         $request
     ): Response
     {
-        $task = $repository->find($id);
+        $task = $taskRepository->find($id);
+
+        $task->setText($request->get('text'));
+        $taskRepository->add($task, true);
 
         $this->denyAccessUnlessGranted('edit', $task->getTaskList()->getBoard());
 
-        return $this->json(['status' => 'ok']);
-// $this->render('todolist/task-edit.html.twig',
-//            [
-//                'taskId' => $task->getId(),
-//                'taskList' => $task->getTaskList(),
-//                'taskText' => $task->getText()
-//            ]);
+        return $this->json(['status' => 'ok', 'data' => ['taskId' => $id]]);
     }
 
     #[Route("/tasks/{id}", methods: 'DELETE')]

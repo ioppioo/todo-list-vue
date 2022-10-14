@@ -2,24 +2,8 @@
 
 document.querySelectorAll('.js-task-edit')
     .forEach(button=> {
-        button.addEventListener('click', onTaskEdit)
+        button.addEventListener('click', createTaskText)
     });
-
-function onTaskEdit(event) {
-    const button = event.target;
-    const input = event.target;
-    const task = button.closest('.tasks__task');
-    const id = task.dataset.taskId;
-    const taskText = input.value;
-    window.api
-        .editTask(id, taskText)
-        .then((response) => {
-            console.log(response);
-        })
-        .catch(reason => {
-            console.log(reason);
-        });
-}
 
 // создаем кнопку редактирования
 
@@ -48,21 +32,26 @@ function createTaskText(event) {
 
 //заменяем текущую задачу полем ввода
 
-function replaceTaskWithInput(task) {
-    let taskText = task.querySelector('.tasks__task-text');
+function replaceTaskWithInput(text) {
+    let taskText = text.querySelector('.tasks__task-text');
     let styles = window.getComputedStyle(taskText);
     let rows = (taskText.getBoundingClientRect().height / parseInt(styles.lineHeight));
     const oldText = taskText.innerText;
+    const task = text.closest('.tasks__task')
+    const id = task.dataset.taskId;
     let input = createTaskInput(oldText, rows, (newText) => {
-        api.editTask(11, newText)
+        api.editTask(id, newText)
+            .then((response) => {
+                console.log(response);
+            })
             .catch((reason) => {
                 console.error(reason);
-                const taskText = task.querySelector('.tasks__task-text');
+                const taskText = text.querySelector('.tasks__task-text');
                 taskText.innerHTML = oldText;
             });
     });
-    task.innerHTML = '';
-    task.appendChild(input);
+    text.innerHTML = '';
+    text.appendChild(input);
     input.focus();
 }
 
@@ -109,18 +98,27 @@ function replaceInputWithTask(input) {
 // }
 
 // создаем разметку новой задачи c полем ввода
-function createNewTask(task) {
+function createNewTask(text) {
     let li = document.createElement('li');
+    let taskText = document.createElement('tasks__task-text');
     li.classList.add('tasks__task');
-    let taskInput = createTaskInput('', 1, (task) => {
-        window.api.saveTasks(1, task)
+    taskText.append(createTaskEditButton());
+    taskText.append(createTaskButtonRemove());
+    let taskInput = createTaskInput('', 1, (text) => {
+        api.createTasks(text)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                li.dataset.id = data.data.id;
+            })
             .catch((reason) => {
                 console.log(reason);
             });
     });
 
     li.appendChild(taskInput);
-    task.appendChild(li);
+    text.appendChild(li);
 
     taskInput.focus();
 }
@@ -147,10 +145,22 @@ let notes = document.querySelectorAll(".note");
 
 for (let button of notes) {
     button.appendChild(createNewTaskButton());
-    // button.appendChild(createTaskListButtonRemove());
+    button.appendChild(createTaskListButtonRemove());
 }
 
 //удаление задачи
+
+//отрисовка кнопки удаления доски и удаление доски сразу после создания
+
+function createTaskButtonRemove() {
+    let createButtonRemove = document.createElement('button');
+    createButtonRemove.className = 'button button-tasks-remove js-task-remove';
+    createButtonRemove.innerText = '🞫';
+    createButtonRemove.addEventListener('click', onTaskRemove);
+
+    return createButtonRemove;
+}
+
 
 document.querySelectorAll('.js-task-remove')
     .forEach(button => {

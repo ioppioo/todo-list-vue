@@ -25,32 +25,31 @@ class TaskListController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $board);
 
-        $taskListId = (int)$request->get('taskListId');
-        if ($taskListId === 0) {
-            $taskList = new TaskList();
-        } else {
-            $taskList = $taskListRepository->find($taskListId);
-        }
+        $taskList = new TaskList();
 
         $taskList->setBoard($board);
         $taskList->setTitle($request->get('title'));
         $taskListRepository->add($taskList, true);
+        $taskListId = $taskList->getId();
 
-        return $this->json(['status' => 'ok']);
-//        return $this->redirect("/boards/{$boardId}");
+        return $this->json([
+            'status' => 'ok',
+            'data' => ['boardId' => $boardId, 'taskListId' => $taskListId]
+        ]);
     }
 
-    #[Route("/boards/{boardId}/task-lists/create", methods: 'GET')]
+    #[Route("/boards/{boardId}/task-lists", methods: 'GET')]
     public function create(
         BoardRepository $boardRepository,
         int             $boardId
     )
     {
         $board = $boardRepository->find($boardId);
+        $boardId = $board->getId();
 
         $this->denyAccessUnlessGranted('edit', $board);
 
-        return $this->json(['status' => 'ok']);
+        return $this->json(['status' => 'ok', 'data' => ['boardId' => $boardId]]);
 
 //        return $this->render('todolist/task-list-edit.html.twig',
 //            [
@@ -60,24 +59,23 @@ class TaskListController extends AbstractController
 //            ]);
     }
 
-    #[Route("/task-lists/{taskListId}/edit", methods: 'PUT')]
+    #[Route("/task-lists/{taskListId}", methods: 'PUT')]
     public function editTaskList(
         TaskListRepository $taskListRepository,
         int                $taskListId,
+        Request            $request
     ): Response
     {
         $taskList = $taskListRepository->find($taskListId);
         $board = $taskList->getBoard();
+        $boardId = $board->getId();
+
+        $taskList->setTitle($request->get('title'));
+        $taskListRepository->add($taskList, true);
 
         $this->denyAccessUnlessGranted('edit', $board);
 
-        return $this->json(['status' => 'ok']);
-//        return $this->render('todolist/task-list-edit.html.twig',
-//            [
-//                'boardId' => $board->getId(),
-//                'taskListId' => $taskList->getId(),
-//                'title' => $taskList->getTitle()
-//            ]);
+        return $this->json(['status' => 'ok','data' => ['boardId' => $boardId, 'taskListId' => $taskListId]]);
     }
 
     #[Route("/task-lists/{taskListId}", methods: 'DELETE')]

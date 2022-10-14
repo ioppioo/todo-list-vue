@@ -2,24 +2,8 @@
 
 document.querySelectorAll('.js-task-list-edit')
     .forEach(button => {
-        button.addEventListener('click', onTaskListTitleEdit)
+        button.addEventListener('click', createTaskListTitleText)
     });
-
-function onTaskListTitleEdit(event) {
-    const button = event.target;
-    const input = event.target;
-    const taskLists = button.closest('.note');
-    const id = taskLists.dataset.taskListId;
-    const title = input.value;
-    window.api
-        .editTaskList(id, title)
-        .then((response) => {
-            console.log(response);
-        })
-        .catch(reason => {
-            console.error(reason);
-        });
-}
 
 // создаем кнопку редактирования
 
@@ -57,6 +41,9 @@ function replaceTaskListTitleWithInput(title) {
     const id = taskLists.dataset.taskListId;
     let input = createTaskListTitleInput(oldTitle, rows, (newTitle) => {
         api.editTaskList(id, newTitle)
+            .then((response) => {
+                console.log(response);
+            })
             .catch((reason) => {
                 console.error(reason);
                 const titleText = title.querySelector('.title-note-text');
@@ -102,28 +89,33 @@ function replaceTaskListTitleWithInputText(input) {
 
 //добавление нового списка задач
 
-function createTaskList() {
+function createNewTaskList() {
     let newTaskList = document.querySelector('.new-note');
     let divNote = document.createElement('div');
     // let color = replaceNoteColor();
 
     divNote.classList.add('note');
-    divNote.dataset.taskListId = "{{ taskList.id }}";
     // divNote.classList.toggle(color);
 
     newTaskList.after(divNote);
 
     divNote.append(createNewTaskButton());
-    // divNote.append(createTaskListButtonRemove());
+    divNote.append(createTaskListButtonRemove());
 
 // добавляем заголовок списка задач
 
     let titleNote = document.createElement('div');
     titleNote.classList.add('title-note');
 
-    const id = divNote.dataset.taskListId;
     let titleInput = createTaskListTitleInput('', 1, (title) => {
-        api.saveTaskList(id, title)
+        api.createTaskList(title)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                divNote.dataset.boardId = data.data.boardId;
+                divNote.dataset.taskListId = data.data.taskListId;
+            })
             .catch((reason) => {
                 console.log(reason);
             });
@@ -147,7 +139,7 @@ function createTaskListButton() {
     let newTaskListButton = document.querySelector('.new-note');
     newTaskListButton.onclick = function (event) {
         let note = event.target.parentElement;
-        createTaskList(note);
+        createNewTaskList(note);
     }
 
     return newTaskListButton;
@@ -170,13 +162,14 @@ createTaskListButton();
 //     return colors[randomIndex];
 // }
 
-// function createTaskListButtonRemove() {
-//     let createButtonRemove = document.createElement('button');
-//     createButtonRemove.className = 'button button-task-del js-note-remove';
-//     createButtonRemove.innerText = '🞫';
-//
-//     return createButtonRemove;
-// }
+function createTaskListButtonRemove() {
+    let createButtonRemove = document.createElement('button');
+    createButtonRemove.className = 'button button-task-del js-note-remove';
+    createButtonRemove.innerText = '🞫';
+    createButtonRemove.addEventListener('click', onTaskListRemove);
+
+    return createButtonRemove;
+}
 
 //удаление списка задач
 

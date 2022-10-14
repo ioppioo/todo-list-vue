@@ -3,7 +3,7 @@
 {% block body %}
 
 
-    <div class="notes">
+    <div class="notes" data-board-id="{{ board.id }}">
 
         <div class="notes">
             <div class="title-new-note">
@@ -32,7 +32,9 @@
                 <ol class="tasks">
                     {% for task in taskList.tasks %}
                         <li class="tasks__task {{ task.isDone ? 'done' : '' }}" data-task-id="{{ task.id }}">
-                            <span class="tasks__task-text">{{ task.text }}</span>
+                            <span class="tasks__task-text"
+                                  data-task-text="{{ task.text }}">
+                                {{ task.text }}</span>
                             <button class="button button-edit js-task-edit">✎</button>
                             <button class="button button-tasks-remove js-task-remove"> 🞫</button>
                         </li>

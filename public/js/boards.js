@@ -121,7 +121,7 @@ function createNewBoard() {
 
     let titleInput = createBoardTitleInput('', 1, (title) => {
         api.createBoard(title)
-            .then((response)=> {
+            .then((response) => {
                 return response.json();
             })
             .then((data) => {
@@ -140,14 +140,9 @@ function createNewBoard() {
 
 // добавление новой доски
 
-function createBoardButton() {
+function createBoardButton(event) {
     let newBoardButton = document.querySelector('.boards-board-new');
-    newBoardButton.onclick = function (event) {
-        let note = event.target.parentElement;
-        createNewBoard(note);
-    }
-
-    return newBoardButton;
+    newBoardButton.addEventListener('click', createNewBoard)
 }
 
 createBoardButton();
@@ -167,12 +162,13 @@ createBoardButton();
 //     return colors[randomIndex];
 // }
 
-//отрисовка кнопки удаления доски
+//отрисовка кнопки удаления доски и удаление доски сразу после создания
 
 function createBoardButtonRemove() {
     let createButtonRemove = document.createElement('button');
     createButtonRemove.className = 'button button-task-del js-board-remove';
     createButtonRemove.innerText = '🞫';
+    createButtonRemove.addEventListener('click', onBoardRemove);
 
     return createButtonRemove;
 }
@@ -192,7 +188,6 @@ function onBoardRemove(event) {
         .removeBoard(id)
         .then(response => {
             if (!response.ok) {
-                // board.appendChild();
             }
         })
         .catch(reason => {
