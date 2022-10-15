@@ -1,7 +1,7 @@
 //редактирования текста задачи
 
 document.querySelectorAll('.js-task-edit')
-    .forEach(button=> {
+    .forEach(button => {
         button.addEventListener('click', createTaskText)
     });
 
@@ -73,10 +73,11 @@ function createEditNewTaskText(text) {
     let taskText = document.createElement('span');
     taskText.classList.add('tasks__task-text');
     taskText.innerText = text.trim();
-    // taskText.onclick = taskDone;
+    taskText.onclick = taskDone;
 
     return taskText;
 }
+
 // заменяем поле ввода на новый текст, если текста нет, то удаляем. Добавляем конпку редактирования.
 function replaceInputWithTask(input) {
     let newText = input.value;
@@ -91,11 +92,30 @@ function replaceInputWithTask(input) {
 }
 
 // // подтверждаем выполнения задачи
-//
-// function taskDone(event) {
-//     let task = event.target.parentElement;
-//     task.classList.toggle('done');
-// }
+
+document.querySelectorAll('.js-task-done')
+    .forEach(button => {
+        button.addEventListener('click', onTaskDone)
+    });
+
+function onTaskDone(event) {
+    const button = event.target.parentElement;
+    const task = button.closest('.tasks__task');
+    const id = task.dataset.taskId;
+
+
+    window.api
+        .taskDone(id)
+        .then((response => {
+            if (!response.ok) {
+                task.classList.toggle('done');
+            }
+        }))
+        .catch(reason => {
+            console.error(reason);
+        })
+
+}
 
 // создаем разметку новой задачи c полем ввода
 function createNewTask(text) {
@@ -182,6 +202,5 @@ function onTaskRemove(event) {
         .catch(reason => {
             console.error(reason);
         });
-    task.remove();
 }
 

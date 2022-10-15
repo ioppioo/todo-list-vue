@@ -130,6 +130,12 @@
     text-decoration: none;
 }
 
+.button-done {
+    left: 0px;
+    color: #9d9d9d;
+    text-decoration: none;
+}
+
 .button-tasks-remove {
     color: #9d9d9d;
     margin-left: 20px;

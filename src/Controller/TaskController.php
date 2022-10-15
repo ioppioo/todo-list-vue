@@ -50,6 +50,21 @@ class TaskController extends AbstractController
         return $this->json(['status' => 'ok', 'data' => ['taskListId' => $taskListId]]);
     }
 
+    #[Route("/tasks/{id}", methods: 'POST')]
+    public function taskDone(
+        TaskRepository $taskRepository,
+        int            $id,
+        Request         $request
+    ): Response
+    {
+        $task = $taskRepository->find($id);
+
+        $isDone = $task->setIsDone($request->get('is_done'));
+        $taskRepository->add($isDone, true);
+
+        return $this->json(['status' => 'ok', 'data' => ['taskId' => $id]]);
+    }
+
     #[Route("/tasks/{id}", methods: 'PUT')]
     public function editTask(
         TaskRepository $taskRepository,

@@ -8,7 +8,6 @@ use App\Repository\TaskListRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TaskListController extends AbstractController
@@ -41,22 +40,16 @@ class TaskListController extends AbstractController
     #[Route("/boards/{boardId}/task-lists", methods: 'GET')]
     public function create(
         BoardRepository $boardRepository,
-        int             $boardId
+        Request            $request
     )
     {
-        $board = $boardRepository->find($boardId);
+//        $board = $boardRepository->find($boardId);
+//
+//        $this->denyAccessUnlessGranted('edit', $board);
+        $board = $boardRepository->find($request->get('boardId'));
         $boardId = $board->getId();
 
-        $this->denyAccessUnlessGranted('edit', $board);
-
         return $this->json(['status' => 'ok', 'data' => ['boardId' => $boardId]]);
-
-//        return $this->render('todolist/task-list-edit.html.twig',
-//            [
-//                'taskListId' => 0,
-//                'boardId' => $board->getId(),
-//                'title' => ""
-//            ]);
     }
 
     #[Route("/task-lists/{taskListId}", methods: 'PUT')]
@@ -68,14 +61,16 @@ class TaskListController extends AbstractController
     {
         $taskList = $taskListRepository->find($taskListId);
         $board = $taskList->getBoard();
-        $boardId = $board->getId();
 
         $taskList->setTitle($request->get('title'));
         $taskListRepository->add($taskList, true);
 
         $this->denyAccessUnlessGranted('edit', $board);
 
-        return $this->json(['status' => 'ok','data' => ['boardId' => $boardId, 'taskListId' => $taskListId]]);
+        return $this->json([
+            'status' => 'ok',
+            'data' => ['boardId' => $boardId, 'taskListId' => $taskListId]
+        ]);
     }
 
     #[Route("/task-lists/{taskListId}", methods: 'DELETE')]

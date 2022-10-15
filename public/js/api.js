@@ -48,12 +48,12 @@ window.api = {
         return api.request(`/tasks/${id}`, 'PUT', {task});
     },
 
-    removeTask(id) {
-        return api.request(`/tasks/${id}`, 'DELETE');
+    taskDone(id) {
+        return api.request(`/tasks/${id}`, 'POST');
     },
 
-    loadBoards(id, title) {
-        return api.request('/boards', 'GET', {title});
+    removeTask(id) {
+        return api.request(`/tasks/${id}`, 'DELETE');
     },
 
 };
