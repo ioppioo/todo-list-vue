@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Board;
 use App\Entity\TaskList;
 use App\Repository\BoardRepository;
 use App\Repository\TaskListRepository;
@@ -16,40 +17,25 @@ class TaskListController extends AbstractController
     public function store(
         TaskListRepository $taskListRepository,
         BoardRepository    $boardRepository,
+        int                $boardId,
         Request            $request
     )
     {
-        $boardId = $request->get('boardId');
         $board = $boardRepository->find($boardId);
-
-        $this->denyAccessUnlessGranted('edit', $board);
+        $boardId = $board->getId();
 
         $taskList = new TaskList();
 
-        $taskList->setBoard($board);
+        $taskList->setBoard($request->get('boardId'));
         $taskList->setTitle($request->get('title'));
         $taskListRepository->add($taskList, true);
+
         $taskListId = $taskList->getId();
 
         return $this->json([
             'status' => 'ok',
-            'data' => ['boardId' => $boardId, 'taskListId' => $taskListId]
+            'data' => ['taskListId' => $taskListId]
         ]);
-    }
-
-    #[Route("/boards/{boardId}/task-lists", methods: 'GET')]
-    public function create(
-        BoardRepository $boardRepository,
-        Request            $request
-    )
-    {
-//        $board = $boardRepository->find($boardId);
-//
-//        $this->denyAccessUnlessGranted('edit', $board);
-        $board = $boardRepository->find($request->get('boardId'));
-        $boardId = $board->getId();
-
-        return $this->json(['status' => 'ok', 'data' => ['boardId' => $boardId]]);
     }
 
     #[Route("/task-lists/{taskListId}", methods: 'PUT')]
@@ -60,6 +46,7 @@ class TaskListController extends AbstractController
     ): Response
     {
         $taskList = $taskListRepository->find($taskListId);
+
         $board = $taskList->getBoard();
 
         $taskList->setTitle($request->get('title'));
@@ -67,10 +54,7 @@ class TaskListController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $board);
 
-        return $this->json([
-            'status' => 'ok',
-            'data' => ['boardId' => $boardId, 'taskListId' => $taskListId]
-        ]);
+        return $this->json(['status' => 'ok', 'data' => ['taskListId' => $taskListId]]);
     }
 
     #[Route("/task-lists/{taskListId}", methods: 'DELETE')]

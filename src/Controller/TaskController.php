@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\TaskList;
 use App\Repository\TaskListRepository;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,71 +16,47 @@ class TaskController extends AbstractController
 {
     #[Route("/tasks", methods: 'POST')]
     public function store(
-        TaskRepository     $taskRepository,
-        TaskListRepository $taskListRepository,
-        Request            $request
+        TaskRepository $taskRepository,
+        Request        $request
     )
     {
-        $taskListId = $request->get('taskListId');
-        $taskList = $taskListRepository->find($taskListId);
-
-        $this->denyAccessUnlessGranted('edit', $taskList->getBoard());
-
-//        $boardId = $taskList->getBoard()->getId();
-
         $task = new Task();
 
-        $task->setTaskList($taskList);
         $task->setText($request->get('text'));
+        $task->setIsDone($request->get('isDone'));
         $taskRepository->add($task, true);
-        $id = $task->getId();
 
-        return $this->json(['status' => 'ok','data' => ['id' => $id]]);
-    }
+        $taskId = $task->getId();
 
-    #[Route("/task-lists/{taskListId}/task", methods: 'GET')]
-    public function createTask(
-        TaskListRepository $taskListRepository,
-        int                $taskListId,
-    )
-    {
-        $taskList = $taskListRepository->find($taskListId);
-
-        $this->denyAccessUnlessGranted('edit', $taskList->getBoard());
-
-        return $this->json(['status' => 'ok', 'data' => ['taskListId' => $taskListId]]);
-    }
-
-    #[Route("/tasks/{id}", methods: 'POST')]
-    public function taskDone(
-        TaskRepository $taskRepository,
-        int            $id,
-        Request         $request
-    ): Response
-    {
-        $task = $taskRepository->find($id);
-
-        $isDone = $task->setIsDone($request->get('is_done'));
-        $taskRepository->add($isDone, true);
-
-        return $this->json(['status' => 'ok', 'data' => ['taskId' => $id]]);
+        return $this->json([
+            'status' => 'ok',
+            'data' => ['taskId' => $taskId]
+        ]);
     }
 
     #[Route("/tasks/{id}", methods: 'PUT')]
     public function editTask(
         TaskRepository $taskRepository,
-        int            $id,
-        Request         $request
+        Task           $task,
+        Request        $request
     ): Response
     {
-        $task = $taskRepository->find($id);
+        if ($request->get('text')) {
+            $task->setText($request->get('text'));
+        }
 
-        $task->setText($request->get('text'));
+        if ($request->get('isDone') !== null) {
+            $task->setIsDone($request->get('isDone'));
+        }
+
         $taskRepository->add($task, true);
 
         $this->denyAccessUnlessGranted('edit', $task->getTaskList()->getBoard());
 
-        return $this->json(['status' => 'ok', 'data' => ['taskId' => $id]]);
+        return $this->json([
+            'status' => 'ok',
+//            'data' => ['taskId' => $id]
+        ]);
     }
 
     #[Route("/tasks/{id}", methods: 'DELETE')]

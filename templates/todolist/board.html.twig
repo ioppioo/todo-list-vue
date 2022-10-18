@@ -31,7 +31,7 @@
                 </div>
                 <ol class="tasks">
                     {% for task in taskList.tasks %}
-                        <li class="tasks__task {{ task.isDone ? 'done' : '' }}" data-task-id="{{ task.id }}">
+                        <li class="tasks__task {{ task.isDone ? 'done' : '' }}" data-task-id="{{ task.id }}" >
                             <button class="button button-done js-task-done">✓</button>
                             <span class="tasks__task-text"
                                   data-task-text="{{ task.text }}">

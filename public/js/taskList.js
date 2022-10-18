@@ -107,13 +107,15 @@ function createNewTaskList() {
     let titleNote = document.createElement('div');
     titleNote.classList.add('title-note');
 
+    let board = divNote.closest('.notes');
+    const boardId = board.dataset.boardId;
+
     let titleInput = createTaskListTitleInput('', 1, (title) => {
-        api.createTaskList(title)
+        api.createTaskList(boardId, title)
             .then((response) => {
                 return response.json();
             })
             .then((data) => {
-                divNote.dataset.boardId = data.data.boardId;
                 divNote.dataset.taskListId = data.data.taskListId;
             })
             .catch((reason) => {

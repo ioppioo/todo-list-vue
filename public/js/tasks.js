@@ -73,7 +73,6 @@ function createEditNewTaskText(text) {
     let taskText = document.createElement('span');
     taskText.classList.add('tasks__task-text');
     taskText.innerText = text.trim();
-    taskText.onclick = taskDone;
 
     return taskText;
 }
@@ -91,7 +90,15 @@ function replaceInputWithTask(input) {
     }
 }
 
-// // подтверждаем выполнения задачи
+// подтверждаем выполнения задачи
+
+function createTaskDoneButton() {
+    let doneButton = document.createElement('button');
+    doneButton.className = 'button button-done js-task-done';
+    doneButton.innerText = '✓';
+
+    return doneButton;
+}
 
 document.querySelectorAll('.js-task-done')
     .forEach(button => {
@@ -102,19 +109,17 @@ function onTaskDone(event) {
     const button = event.target.parentElement;
     const task = button.closest('.tasks__task');
     const id = task.dataset.taskId;
+    const isDone = task.classList.contains('done');
 
-
-    window.api
-        .taskDone(id)
+    api.taskDone(id, !isDone)
         .then((response => {
-            if (!response.ok) {
+            if (response.ok) {
                 task.classList.toggle('done');
             }
         }))
         .catch(reason => {
             console.error(reason);
         })
-
 }
 
 // создаем разметку новой задачи c полем ввода
@@ -122,15 +127,24 @@ function createNewTask(text) {
     let li = document.createElement('li');
     let taskText = document.createElement('tasks__task-text');
     li.classList.add('tasks__task');
+    taskText.before(createTaskDoneButton());
     taskText.append(createTaskEditButton());
     taskText.append(createTaskButtonRemove());
+
+
+    // document.querySelectorAll()
+
+    const taskLists = document.querySelector('.note');
+    const taskList = taskLists.closest('.note');
+    const taskListId = taskList.dataset.taskListId;
+
     let taskInput = createTaskInput('', 1, (text) => {
-        api.createTasks(text)
+        api.createTasks(taskListId, text)
             .then((response) => {
                 return response.json();
             })
             .then((data) => {
-                li.dataset.id = data.data.id;
+                li.dataset.taskId = data.data.taskId;
             })
             .catch((reason) => {
                 console.log(reason);

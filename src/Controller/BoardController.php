@@ -25,13 +25,9 @@ class BoardController extends AbstractController
         $boardRepository->add($board, true);
         $boardId = $board->getId();
 
-        return $this->json(['status' => 'ok', 'data' => ['boardId' => $boardId]]);
-    }
-
-    #[Route("/boards/create", methods: 'GET')]
-    public function create()
-    {
-
+        return $this->json([
+            'status' => 'ok',
+            'data' => ['boardId' => $boardId]]);
     }
 
     #[Route("/boards", methods: 'GET')]
@@ -73,7 +69,6 @@ class BoardController extends AbstractController
         $boardRepository->add($board, true);
 
         $this->denyAccessUnlessGranted('edit', $board);
-
 
         return $this->json(['status' => 'ok', 'data' => ['boardId' => $boardId]]);
     }
