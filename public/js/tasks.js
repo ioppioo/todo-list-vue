@@ -87,6 +87,8 @@ function replaceInputWithTask(input) {
         task.innerHTML = '';
         task.appendChild(createEditNewTaskText(newText));
         task.appendChild(createEditTaskButton());
+        task.append(createTaskDoneButton());
+        task.append(createTaskButtonRemove());
     }
 }
 
@@ -131,19 +133,19 @@ function createNewTask(text) {
     taskText.append(createTaskEditButton());
     taskText.append(createTaskButtonRemove());
 
-
-    // document.querySelectorAll()
-
-    const taskLists = document.querySelector('.note');
-    const taskList = taskLists.closest('.note');
+    const taskList = text.closest('.note');
     const taskListId = taskList.dataset.taskListId;
 
     let taskInput = createTaskInput('', 1, (text) => {
-        api.createTasks(taskListId, text)
+        api.createTasks(
+            Number(taskListId),
+            text)
             .then((response) => {
-                return response.json();
+                return response.json(taskListId);
             })
             .then((data) => {
+                taskList.dataset.taskListId = taskListId;
+                data.data.taskListId = taskListId;
                 li.dataset.taskId = data.data.taskId;
             })
             .catch((reason) => {
@@ -216,5 +218,6 @@ function onTaskRemove(event) {
         .catch(reason => {
             console.error(reason);
         });
+    task.remove();
 }
 

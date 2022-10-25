@@ -49,4 +49,12 @@ class AuthController extends AbstractController
         return $this->render('auth/signup.html.twig');
     }
 
+    #[Route('/me')]
+    public function me()
+    {
+        return $this->json([
+            'status' => 'ok',
+            'data' => ['user' => $this->getUser()]
+        ]);
+    }
 }

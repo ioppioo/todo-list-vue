@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Board;
 use App\Entity\TaskList;
 use App\Repository\BoardRepository;
 use App\Repository\TaskListRepository;
@@ -17,24 +16,25 @@ class TaskListController extends AbstractController
     public function store(
         TaskListRepository $taskListRepository,
         BoardRepository    $boardRepository,
-        int                $boardId,
         Request            $request
-    )
+    ): Response
     {
+        $boardId = $request->get('boardId');
         $board = $boardRepository->find($boardId);
-        $boardId = $board->getId();
 
         $taskList = new TaskList();
 
-        $taskList->setBoard($request->get('boardId'));
+        $taskList->setBoard($board);
         $taskList->setTitle($request->get('title'));
         $taskListRepository->add($taskList, true);
-
         $taskListId = $taskList->getId();
 
         return $this->json([
             'status' => 'ok',
-            'data' => ['taskListId' => $taskListId]
+            'data' => [
+                'taskListId' => $taskListId,
+                'boardId' => $boardId
+            ]
         ]);
     }
 

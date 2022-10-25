@@ -111,11 +111,12 @@ function createNewTaskList() {
     const boardId = board.dataset.boardId;
 
     let titleInput = createTaskListTitleInput('', 1, (title) => {
-        api.createTaskList(boardId, title)
+        api.createTaskList(Number(boardId), title)
             .then((response) => {
                 return response.json();
             })
             .then((data) => {
+                board.dataset.boardId = boardId;
                 divNote.dataset.taskListId = data.data.taskListId;
             })
             .catch((reason) => {

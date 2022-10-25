@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Task;
-use App\Entity\TaskList;
 use App\Repository\TaskListRepository;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,20 +16,26 @@ class TaskController extends AbstractController
     #[Route("/tasks", methods: 'POST')]
     public function store(
         TaskRepository $taskRepository,
+        TaskListRepository $taskListRepository,
         Request        $request
-    )
+    ): Response
     {
+        $taskListId = $request->get('taskListId');
+        $taskList = $taskListRepository->find($taskListId);
+
         $task = new Task();
 
+        $task->setTaskList($taskList);
         $task->setText($request->get('text'));
-        $task->setIsDone($request->get('isDone'));
         $taskRepository->add($task, true);
-
         $taskId = $task->getId();
 
         return $this->json([
             'status' => 'ok',
-            'data' => ['taskId' => $taskId]
+            'data' => [
+                'taskId' => $taskId,
+                'taskListId' => $taskListId
+            ]
         ]);
     }
 
@@ -55,7 +60,6 @@ class TaskController extends AbstractController
 
         return $this->json([
             'status' => 'ok',
-//            'data' => ['taskId' => $id]
         ]);
     }
 
