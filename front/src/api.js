@@ -20,8 +20,20 @@ function request(url, method, data) {
 
 //добавить для логина и регистрации
 
+export function auth(username, password) {
+    return request('/login', 'POST', {username, password})
+}
+
+export function signup(login, email, password) {
+    return request('/signup', 'POST', {login, email, password})
+}
+
 export function me() {
     return request('/me', 'GET')
+}
+
+export function getBoards() {
+    return request('/boards', 'GET')
 }
 
 export function createBoard(title) {

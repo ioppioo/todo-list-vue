@@ -26,7 +26,8 @@ class BoardController extends AbstractController
         $boardId = $board->getId();
 
         return $this->json([
-            'status' => 'ok',
+                'status' => 'ok',
+
             'data' => ['boardId' => $boardId]]);
     }
 
@@ -37,11 +38,16 @@ class BoardController extends AbstractController
         $user = $this->getUser();
         $boards = $user->getBoards();
 
-        return $this->render('todolist/boards.html.twig',
-            [
-                'boards' => $boards
-            ]
+        return $this->json([
+            'status' => 'ok',
+//            'data' => ['boards' => $boards],
+            'data' => [
+//                'user' =>  $user,
+                'boards' => $boards,
+    ]
+            ], 200, [], ['boards']
         );
+
     }
 
     #[Route("/boards/{id}", methods: 'GET')]
@@ -83,7 +89,7 @@ class BoardController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $board);
 
-        $boardRepository->remove( $board, true);
+        $boardRepository->remove($board, true);
 
         return $this->json(['status' => 'ok']);
     }

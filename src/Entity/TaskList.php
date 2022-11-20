@@ -27,6 +27,7 @@ class TaskList
     #[ORM\OneToMany(mappedBy: "taskList", targetEntity: Task::class)]
     private Collection $tasks;
 
+    #[Groups(['todolist'])]
     #[ORM\ManyToOne(targetEntity: Board::class, inversedBy: 'taskLists')]
     #[ORM\JoinColumn(nullable: false)]
     private Board $board;

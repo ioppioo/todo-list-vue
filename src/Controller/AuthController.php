@@ -13,17 +13,25 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthController extends AbstractController
 {
-    #[Route("/login", name: "app_login")]
+    #[Route("/login", name: "app_login", methods: 'POST')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         $lastUsername = $authenticationUtils->getLastUsername();
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        return $this->render('auth/login.html.twig', [
+        return $this->json([
             'login' => $lastUsername,
+            'status' => 'ok',
             'error' => $error,
-            'message' => null,
         ]);
+
+//        return $this->json([
+//            'status' => 'ok',
+//            'error' => $error,
+//            'data' => [
+//                'user' => $lastUsername,
+//            ]
+//        ], 200, [], ['user']);
     }
 
     #[Route('/signup')]
@@ -43,10 +51,17 @@ class AuthController extends AbstractController
             $email = $request->get('email');
             $this->addFlash('success', "Регистрация завершена! Мы отправили письмо на адрес $email.");
 
-            return $this->redirect('/login');
+            return $this->json([
+                'status' => 'ok',
+                'data' => [
+                    'user' => $user,
+                ]
+            ], 200, [], ['user']);
         }
 
-        return $this->render('auth/signup.html.twig');
+        return $this->json([
+            'status' => 'ok',
+        ]);
     }
 
     #[Route('/me')]
@@ -54,7 +69,9 @@ class AuthController extends AbstractController
     {
         return $this->json([
             'status' => 'ok',
-            'data' => ['user' => $this->getUser()]
-        ]);
+            'data' => [
+                'user' => $this->getUser(),
+            ]
+        ], 200, [], ['user']);
     }
 }
