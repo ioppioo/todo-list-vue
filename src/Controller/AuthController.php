@@ -13,25 +13,19 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthController extends AbstractController
 {
-    #[Route("/login", name: "app_login", methods: 'POST')]
+    #[Route("/login", name: "app_login")]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         $lastUsername = $authenticationUtils->getLastUsername();
         $error = $authenticationUtils->getLastAuthenticationError();
 
         return $this->json([
-            'login' => $lastUsername,
             'status' => 'ok',
             'error' => $error,
-        ]);
-
-//        return $this->json([
-//            'status' => 'ok',
-//            'error' => $error,
-//            'data' => [
-//                'user' => $lastUsername,
-//            ]
-//        ], 200, [], ['user']);
+            'data' => [
+                'user' => $this->getUser(),
+            ]
+        ], 200, [], ['groups' => ['user']]);
     }
 
     #[Route('/signup')]
@@ -56,7 +50,7 @@ class AuthController extends AbstractController
                 'data' => [
                     'user' => $user,
                 ]
-            ], 200, [], ['user']);
+            ], 200, [], ['groups' => ['user']]);
         }
 
         return $this->json([
@@ -72,6 +66,6 @@ class AuthController extends AbstractController
             'data' => [
                 'user' => $this->getUser(),
             ]
-        ], 200, [], ['user']);
+        ], 200, [], ['groups' => ['user']]);
     }
 }

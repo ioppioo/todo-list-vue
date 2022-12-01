@@ -34,8 +34,8 @@ class TaskListController extends AbstractController
             'data' => [
                 'taskListId' => $taskListId,
                 'boardId' => $boardId
-            ]
-        ]);
+            ]],
+            200, [], ['groups' => ['taskLists']]);
     }
 
     #[Route("/task-lists/{taskListId}", methods: 'PUT')]

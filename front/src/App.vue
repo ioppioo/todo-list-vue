@@ -7,8 +7,6 @@ import {signup} from "./api.js";
 
 const router = useRouter();
 
-const isInit = ref(false);
-
 const isAuthenticated = ref(false);
 
 async function checkAuth() {
@@ -21,8 +19,6 @@ async function checkAuth() {
   } else {
     await router.push('/boards')
   }
-
-  isInit.value = true;
 }
 
 checkAuth();
@@ -30,6 +26,8 @@ checkAuth();
 async function tryLogin(username, password) {
 
   const response = await auth(username, password);
+
+  console.log(await me());
 
   isAuthenticated.value = response.status === 200;
 
@@ -56,12 +54,20 @@ async function trySignup(login, email, password) {
 </script>
 
 <template>
-  <h1 v-if="!isInit">loading...</h1>
-  <router-view
-      v-else
-      @login="tryLogin"
-      @signup="trySignup"
-      @boards="tryBoards"
-  />
+  <RouterView v-slot="{ Component }" @login="tryLogin" @signup="trySignup">
+    <template v-if="Component">
+      <Transition mode="out-in">
+        <KeepAlive>
+          <Suspense>
+            <component :is="Component"></component>
+            <template #fallback>
+              Loading...
+            </template>
+          </Suspense>
+        </KeepAlive>
+      </Transition>
+    </template>
+  </RouterView>
 </template>
+
 
