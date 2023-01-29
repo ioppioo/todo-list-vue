@@ -1,0 +1,38 @@
+<template>
+
+  <form class="boards" action="/tasks" method="POST">
+    <div class="notes">
+      <div class="note">
+
+        <input type="hidden" id="taskListId" name="taskListId" value="{{ taskList.id }}">
+        <input type="hidden" id="taskId" name="taskId" value="{{ taskId }}">
+
+        <div class="title-note">
+                    <span class="title-note-text">
+                        {{ taskList.title }}
+                    </span>
+        </div>
+
+        <ol class="tasks">
+          <li class="tasks__task" for="task-list">
+                        <textarea class="input" rows="1" id="text" name="text"
+                                  value="{{ taskText }}">{{ taskText }}</textarea>
+            <button class="button button-edit">✓</button>
+          </li>
+        </ol>
+
+      </div>
+
+    </div>
+  </form>
+
+</template>
+
+<script setup>
+import {ref} from "vue";
+
+</script>
+
+<style scoped>
+
+</style>

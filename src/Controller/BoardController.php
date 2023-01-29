@@ -3,15 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Board;
+use App\Entity\TaskList;
 use App\Entity\User;
 use App\Repository\BoardRepository;
-use App\Repository\TaskListRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
+
 
 class BoardController extends AbstractController
 {
@@ -47,34 +47,33 @@ class BoardController extends AbstractController
             ]],
             200, [], ['groups' => ['boards']]
         );
-
     }
 
-    #[Route("/boards/{id<\d+>}", name: 'boards_getBoard', methods: 'GET')] //requirements: ["id" => "\d+"]
+    #[Route("/boards/{id}", name: 'boards_getBoard', methods: 'GET')]
+    #[Entity('id', expr: 'repository.find(id)')]
     public function getBoard(
-        Board           $board,
         BoardRepository $boardRepository,
         Request         $request,
     )
     {
-        $this->denyAccessUnlessGranted('view', $board);
-
         $id = $request->get('id');
         $board = $boardRepository->find($id);
+
+        $this->denyAccessUnlessGranted('view', $board);
 
         $taskLists = $board->getTaskLists();
 
         return $this->json([
             'status' => 'ok',
             'data' => [
-                'board' => $board,
                 'taskLists' => $taskLists,
+                'title' => $board->getTitle()
             ]],
-            200, [], ['groups' => ['boards']]
+            200, [], ['groups' => ['taskLists']]
         );
     }
 
-    #[Route("/boards/{id<\d+>}", name: 'boards_editBoard', methods: 'PUT')]
+    #[Route("/boards/{id}", name: 'boards_editBoard', methods: 'PUT')]
     public function editBoard(
         BoardRepository $boardRepository,
         int             $id,
@@ -93,11 +92,12 @@ class BoardController extends AbstractController
             'data' => [
                 'id' => $id,
                 'board' => $board,
-            ]
-        ]);
+            ]],
+            200, [], ['groups' => ['boards']]
+        );
     }
 
-    #[Route("/boards/{id<\d+>}", name: 'boards_removeBoard', methods: 'DELETE')]
+    #[Route("/boards/{id}", name: 'boards_removeBoard', methods: 'DELETE')]
     public function removeBoard(
         BoardRepository $boardRepository,
         int             $id

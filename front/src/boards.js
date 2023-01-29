@@ -26,7 +26,7 @@ function createEditBoardTitleButton() {
     return button;
 }
 
-function createBoardTitleText(event) {
+export function createBoardTitleText(event) {
     event.stopPropagation();
     let note = event.target.parentElement;
     replaceBoardTitleWithInput(note);

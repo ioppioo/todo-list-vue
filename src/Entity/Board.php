@@ -18,11 +18,11 @@ class Board
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(['boards', 'taskLists'])]
+    #[Groups(['boards'])]
     #[ORM\Column(length: 255)]
     private string $title;
 
-    #[Groups(['taskLists'])]
+    #[Groups(['boards'])]
     #[ORM\OneToMany(mappedBy: "board", targetEntity: TaskList::class, orphanRemoval: true)]
     private Collection $taskLists;
 

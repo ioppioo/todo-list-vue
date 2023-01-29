@@ -19,7 +19,7 @@ class TaskListController extends AbstractController
         Request            $request
     ): Response
     {
-        $boardId = $request->get('boardId');
+        $boardId = $request->get('id');
         $board = $boardRepository->find($boardId);
 
         $taskList = new TaskList();

@@ -1,5 +1,6 @@
 <template>
-  <div class="boards">
+
+  <div class="boards" v-if="boards">
 
     <div class="logout">
       <router-link to="/logout"
@@ -7,25 +8,28 @@
       </router-link>
     </div>
 
-    <div @click="createBoard" class="boards-board-new">
-      <div v-on:click="createBoard()" class="board-new-title">
-        <span class="board-title-text">Новая доска</span>
-      </div>
+    <div class="boards-board-new">
+      <router-link to="/boards/create">
+        <div class="board-new-title">
+          <span class="board-title-text">Новая доска</span>
+        </div>
+      </router-link>
     </div>
 
-    <div v-for="board in boards" v-bind:key="board.id"
+    <div v-for="board in boards" :key="board.id"
          class="board"
          :data-board-id="`${board.id}`">
-      <button v-on:click="removeBoard(`${board.id}`)" class="button button-task-del js-board-remove">🞫</button>
+      <button v-on:click="onRemoveBoard(board.id)" class="button button-task-del js-board-remove">🞫</button>
       <div class="board-title">
         <router-link :to="`/boards/${board.id}`">
                                 <span class="board-title-text"
                                       :data-board-title="board.title">
-                                    {{board.title}}
+                                    {{ board.title }}
                                 </span>
         </router-link>
-        <button v-on:click="editBoard(`${board.id}`)" class="button button-edit js-board-edit">✎</button>
+        <router-link :to="`/boards/${board.id}/edit`" class="button button-edit js-board-edit">✎</router-link>
       </div>
+
     </div>
 
   </div>
@@ -35,13 +39,30 @@
 <script setup>
 
 import {getBoards} from "../api.js"
-import {createBoard} from "../api.js"
-import {editBoard} from "../api.js"
 import {removeBoard} from "../api.js"
+import {ref} from "vue";
+import {useRouter} from "vue-router";
 
-const response = await getBoards();
+const router = useRouter();
 
-const boards = (await response.json()).data.boards;
+const boards = ref(null);
+
+const response = getBoards()
+    .then(response => response.json())
+    .then(json=>{
+      boards.value = json.data.boards;
+    });
+
+async function onRemoveBoard(boardId) {
+  await removeBoard(boardId);
+  boards.value = boards.value.filter(board => board.id !== boardId);
+}
+
+async function onEditBoardTitle(boardId, title) {
+  // const id = route.params.id;
+
+
+}
 
 </script>
 

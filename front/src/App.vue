@@ -7,21 +7,26 @@ import {signup} from "./api.js";
 
 const router = useRouter();
 
-const isAuthenticated = ref(false);
+const isAuthenticated = ref(null);
+
+router.beforeEach(async (to, from) => {
+  if (isAuthenticated.value === null) {
+    await checkAuth();
+  }
+  if (
+      !isAuthenticated.value &&
+      !["Login", "SignUp"].includes(to.name)
+  ) {
+    return {name: 'Login'}
+  }
+})
 
 async function checkAuth() {
   const user = (await (await me()).json()).data.user;
 
   isAuthenticated.value = user !== null;
 
-  if (!isAuthenticated.value) {
-    await router.push('/signup')
-  } else {
-    await router.push('/boards')
-  }
 }
-
-checkAuth();
 
 async function tryLogin(username, password) {
 
@@ -57,14 +62,7 @@ async function trySignup(login, email, password) {
   <RouterView v-slot="{ Component }" @login="tryLogin" @signup="trySignup">
     <template v-if="Component">
       <Transition mode="out-in">
-        <KeepAlive>
-          <Suspense>
-            <component :is="Component"></component>
-            <template #fallback>
-              Loading...
-            </template>
-          </Suspense>
-        </KeepAlive>
+          <component :is="Component"></component>
       </Transition>
     </template>
   </RouterView>

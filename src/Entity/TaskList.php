@@ -19,15 +19,15 @@ class TaskList
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(['todolist'])]
+    #[Groups(['taskLists'])]
     #[ORM\Column(length: 255)]
     private string $title;
 
-    #[Groups(['todolist'])]
+    #[Groups(['taskLists'])]
     #[ORM\OneToMany(mappedBy: "taskList", targetEntity: Task::class)]
     private Collection $tasks;
 
-    #[Groups(['todolist'])]
+    #[Groups(['taskLists'])]
     #[ORM\ManyToOne(targetEntity: Board::class, inversedBy: 'taskLists')]
     #[ORM\JoinColumn(nullable: false)]
     private Board $board;
