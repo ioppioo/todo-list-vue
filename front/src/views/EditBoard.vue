@@ -44,13 +44,12 @@ if (boardId) {
 }
 
 async function onEditBoard() {
-
   if (boardId) {
     await editBoard(boardId, boardTitle.value);
   } else {
     await createBoard(boardTitle.value);
   }
-  await router.push("/boards")
+  await router.push("/boards");
 }
 
 </script>

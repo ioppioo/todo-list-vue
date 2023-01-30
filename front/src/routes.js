@@ -30,7 +30,7 @@ export default [
 
     {
         path: '/boards/:id',
-        component: TaskLists
+        component: TaskLists,
     },
 
     {
@@ -49,7 +49,12 @@ export default [
     },
 
     {
-        path: '/task-lists/edit',
+        path: '/task-lists/create',
+        component: EditTaskList
+    },
+
+    {
+        path: '/task-lists/:id/edit',
         component: EditTaskList
     },
 

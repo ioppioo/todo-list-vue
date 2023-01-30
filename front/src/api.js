@@ -61,8 +61,8 @@ export function createTaskList(boardId, title) {
     return request(`/task-lists`, 'POST', {boardId, title});
 }
 
-export function editTaskList(id, title) {
-    return request(`/task-lists/${id}`, 'PUT', {title});
+export function editTaskList(taskListId, title) {
+    return request(`/task-lists/${taskListId}`, 'PUT', {title});
 }
 
 export function removeTaskList(taskListId) {

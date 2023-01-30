@@ -62,10 +62,11 @@ async function trySignup(login, email, password) {
   <RouterView v-slot="{ Component }" @login="tryLogin" @signup="trySignup">
     <template v-if="Component">
       <Transition mode="out-in">
+        <Suspense>
           <component :is="Component"></component>
+        </Suspense>
       </Transition>
     </template>
   </RouterView>
 </template>
-
 

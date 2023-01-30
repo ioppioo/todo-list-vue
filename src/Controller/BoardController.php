@@ -49,8 +49,7 @@ class BoardController extends AbstractController
         );
     }
 
-    #[Route("/boards/{id}", name: 'boards_getBoard', methods: 'GET')]
-    #[Entity('id', expr: 'repository.find(id)')]
+    #[Route("/boards/{id}", methods: 'GET')]
     public function getBoard(
         BoardRepository $boardRepository,
         Request         $request,
@@ -67,13 +66,12 @@ class BoardController extends AbstractController
             'status' => 'ok',
             'data' => [
                 'taskLists' => $taskLists,
-                'title' => $board->getTitle()
             ]],
             200, [], ['groups' => ['taskLists']]
         );
     }
 
-    #[Route("/boards/{id}", name: 'boards_editBoard', methods: 'PUT')]
+    #[Route("/boards/{id}", methods: 'PUT')]
     public function editBoard(
         BoardRepository $boardRepository,
         int             $id,

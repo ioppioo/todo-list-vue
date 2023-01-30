@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: TaskListRepository::class)]
 class TaskList
 {
-    #[Groups(['todolist'])]
+    #[Groups(['taskLists'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]

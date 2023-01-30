@@ -58,12 +58,6 @@ async function onRemoveBoard(boardId) {
   boards.value = boards.value.filter(board => board.id !== boardId);
 }
 
-async function onEditBoardTitle(boardId, title) {
-  // const id = route.params.id;
-
-
-}
-
 </script>
 
 <style>

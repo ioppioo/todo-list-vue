@@ -1,5 +1,5 @@
 <template>
-  <div class="notes" :data-board-id="`${$route.params.id}`">
+  <div class="notes" v-if="taskLists">
     <div class="note">
       <div class="title-new-note">
         <router-link to="/boards" class="title-note-text">К списку досок</router-link>
@@ -7,7 +7,7 @@
     </div>
 
     <div class="new-note">
-      <router-link :to="`/boards/${id}/edit`" class="title-new-note">
+      <router-link to="/task-lists/create" class="title-new-note">
         <span class="title-note-text">Новый список</span>
       </router-link>
     </div>
@@ -22,7 +22,7 @@
                     <span class="title-note-text"
                           :data-task-list-title="taskList.title">
                         {{ taskList.title }}</span>
-        <button class="button button-edit js-task-list-edit">✎</button>
+        <router-link :to="`/task-lists/${taskList.id}/edit`" class="button button-edit js-task-list-edit">✎</router-link>
       </div>
 
       <ol class="tasks"
@@ -47,10 +47,11 @@
 </template>
 
 <script setup>
-
-import {getBoard, removeBoard} from "../api.js"
-import {useRoute} from "vue-router";
+import {getBoard, removeTaskList} from "../api.js"
+import {useRoute, useRouter} from "vue-router";
 import {ref} from "vue";
+
+const router = useRouter();
 
 const route = useRoute();
 
@@ -60,8 +61,17 @@ const response = await getBoard(id);
 
 const taskLists = ref((await response.json()).data.taskLists);
 
+// const taskLists = ref(null);
+//
+// const response = await getBoard(id)
+//     .then(response=>response.json())
+//     .then(json=>{
+//       taskLists.value = json.data.taskLists;
+//     })
+
+
 async function onRemoveTaskList(taskListId) {
-  await removeBoard(taskListId);
+  await removeTaskList(taskListId);
   taskLists.value = taskLists.value.filter(taskList => taskList.id !== taskListId);
 }
 

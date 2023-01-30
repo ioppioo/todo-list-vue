@@ -33,7 +33,7 @@ class TaskListController extends AbstractController
             'status' => 'ok',
             'data' => [
                 'taskListId' => $taskListId,
-                'boardId' => $boardId
+                'boardId' => $board->getId(),
             ]],
             200, [], ['groups' => ['taskLists']]);
     }
@@ -54,7 +54,18 @@ class TaskListController extends AbstractController
 
         $this->denyAccessUnlessGranted('edit', $board);
 
-        return $this->json(['status' => 'ok', 'data' => ['taskListId' => $taskListId]]);
+        $boardId = $taskList->getBoard()->getId();
+
+        return $this->json([
+            'status' => 'ok',
+            'data' => [
+                'boardId' => $boardId,
+                'taskListId' => $taskListId,
+                'title' => $taskList->getTitle(),
+            ]],
+            200, [], ['groups' => ['taskLists']]
+
+        );
     }
 
     #[Route("/task-lists/{taskListId}", methods: 'DELETE')]
