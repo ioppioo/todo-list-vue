@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 #[ORM\Entity(repositoryClass: BoardRepository::class)]
 class Board
 {
-    #[Groups(['boards', 'taskLists'])]
+    #[Groups(['boards', 'taskLists', 'taskList'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]

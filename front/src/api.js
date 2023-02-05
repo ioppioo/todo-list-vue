@@ -40,10 +40,6 @@ export function getBoard(id) {
     return request(`/boards/${id}`, 'GET')
 }
 
-export function getTaskList() {
-    return request(`/task-lists`, 'POST')
-}
-
 export function createBoard(title) {
     return request('/boards', 'POST', {title});
 }
@@ -56,6 +52,10 @@ export function removeBoard(boardId) {
     return request(`/boards/${boardId}`, 'DELETE');
 }
 
+
+export function getTaskList(id) {
+    return request(`/task-lists/${id}`, 'GET')
+}
 
 export function createTaskList(boardId, title) {
     return request(`/task-lists`, 'POST', {boardId, title});
@@ -70,8 +70,11 @@ export function removeTaskList(taskListId) {
 }
 
 
-export function createTasks(taskListId, text
-) {
+export function getTask(id) {
+    return request(`/tasks/${id}`, 'GET')
+}
+
+export function createTasks(taskListId, text) {
     return request(`/tasks`, 'POST', {taskListId, text});
 }
 
@@ -79,12 +82,10 @@ export function editTask(id, text) {
     return request(`/tasks/${id}`, 'PUT', {text});
 }
 
-export function taskDone(id, isDone) {
-    return request(`/tasks/${id}`, 'PUT', {isDone});
+export function taskDone(taskId, isDone) {
+    return request(`/tasks/${taskId}`, 'PUT', {isDone});
 }
 
 export function removeTask(id) {
     return request(`/tasks/${id}`, 'DELETE');
 }
-
-

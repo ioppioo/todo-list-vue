@@ -1,53 +1,61 @@
 <template>
-  <div>
-    <div>
-      <router-link to="/boards">
-        <h1>back</h1>
+  <div class="notes notes-edit">
+    <div class="note">
+      <router-link :to="`/boards/${boardId}`">
+        <div class="title-new-note">
+          <span class="title-note-text">Назад</span>
+        </div>
       </router-link>
     </div>
 
-    <form class="boards" action="/task-lists" method="POST" @submit.prevent="$emit('title', title)">
-      <div class="notes">
+    <form action="/task-lists" method="POST" @submit.prevent="$emit('title', title)">
         <div class="new-note">
-          <input type="hidden" id="boardId" name="boardId" value="{{ id }}">
+          <input type="hidden" id="boardId" name="boardId" value="{{ boardId }}">
           <input type="hidden" id="taskListId" name="taskListId" value="{{ taskListId }}">
           <label class="title-note" for="task-list">
             <textarea v-model="title" class="input" rows="1" id="title" name="title">{{ title }}</textarea>
             <button v-on:click="onEditTaskList" class="button button-edit">✓</button>
           </label>
         </div>
-      </div>
     </form>
-
+    
   </div>
 </template>
 
 <script setup>
 import {ref} from "vue";
 import {useRouter, useRoute} from "vue-router";
-import {createTaskList, editTaskList, getBoard} from "../api.js";
+import {createTaskList, editTaskList, getTaskList} from "../api.js";
 
 const router = useRouter();
 
 const route = useRoute();
 
-const id = 29;
-
 const taskListId = route.params.id;
+
+let boardId = route.params.boardId;
+
+const taskList = ref(null);
 
 const title = ref('');
 
-// const response = await getBoard();
-//
-// const boardId = ref((await response.json()).data.boardId);
+if (taskListId) {
+  const response = getTaskList(taskListId)
+      .then(response => response.json())
+      .then(json => {
+        taskList.value = json.data.taskList;
+        title.value = taskList.value.title;
+        boardId = taskList.value.board.id;
+      })
+}
 
 async function onEditTaskList() {
   if (taskListId) {
     await editTaskList(taskListId, title.value);
   } else {
-    await createTaskList(id, title.value);
+    await createTaskList(boardId, title.value);
   }
-  await router.push(`/boards/${id}`);
+  await router.push(`/boards/${boardId}`);
 }
 
 </script>

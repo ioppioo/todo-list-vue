@@ -19,7 +19,7 @@ class TaskListController extends AbstractController
         Request            $request
     ): Response
     {
-        $boardId = $request->get('id');
+        $boardId = $request->get('boardId');
         $board = $boardRepository->find($boardId);
 
         $taskList = new TaskList();
@@ -32,10 +32,30 @@ class TaskListController extends AbstractController
         return $this->json([
             'status' => 'ok',
             'data' => [
+                'boardId' => $boardId,
                 'taskListId' => $taskListId,
-                'boardId' => $board->getId(),
             ]],
             200, [], ['groups' => ['taskLists']]);
+    }
+
+    #[Route("/task-lists/{id}", methods: 'GET')]
+    public function getTaskList(
+        TaskListRepository $taskListRepository,
+        Request         $request,
+    )
+    {
+        $id = $request->get('id');
+        $taskList = $taskListRepository->find($id);
+
+        $this->denyAccessUnlessGranted('view', $taskList->getBoard());
+
+        return $this->json([
+            'status' => 'ok',
+            'data' => [
+                'taskList' => $taskList,
+            ]],
+            200, [], ['groups' => ['taskList']]
+        );
     }
 
     #[Route("/task-lists/{taskListId}", methods: 'PUT')]
@@ -63,7 +83,7 @@ class TaskListController extends AbstractController
                 'taskListId' => $taskListId,
                 'title' => $taskList->getTitle(),
             ]],
-            200, [], ['groups' => ['taskLists']]
+            200, [], ['groups' => ['taskLists', 'taskList']]
 
         );
     }

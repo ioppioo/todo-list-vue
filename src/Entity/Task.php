@@ -9,13 +9,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
-    #[Groups(['taskLists'])]
+    #[Groups(['taskLists', 'taskList'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(['taskLists'])]
+    #[Groups(['taskLists', 'taskList'])]
     #[ORM\Column(length: 255)]
     private string $text;
 

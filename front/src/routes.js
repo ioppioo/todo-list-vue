@@ -4,6 +4,7 @@ import BoardsList from "./views/BoardsList.vue"
 import TaskLists from "./views/TaskLists.vue"
 import EditBoard from "./views/EditBoard.vue"
 import EditTaskList from "./views/EditTaskList.vue"
+import EditTask from "./views/EditTask.vue"
 
 export default [
     {
@@ -45,12 +46,12 @@ export default [
 
     {
         path: '/task-lists',
-        component: TaskLists
+        component: TaskLists,
     },
 
     {
-        path: '/task-lists/create',
-        component: EditTaskList
+        path: '/boards/:boardId/task-lists/create',
+        component: EditTaskList,
     },
 
     {
@@ -61,5 +62,15 @@ export default [
     {
         path: '/tasks',
         component: TaskLists
+    },
+
+    {
+        path: '/boards/:boardId/task-lists/:taskListId/tasks/create',
+        component: EditTask
+    },
+
+    {
+        path: '/task-lists/:taskListId/tasks/:id/edit',
+        component: EditTask
     },
 ]

@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <div>
+  <div class="boards">
+    <div class="board">
       <router-link to="/boards">
-        <h1>back</h1>
+        <div class="board-new-title">
+          <span class="board-title-text">К списку досок</span>
+        </div>
       </router-link>
     </div>
 
-    <form class="boards" action="/boards" method="POST" @submit.prevent="$emit('boardTitle', boardTitle)">
+    <form action="/boards" method="POST" @submit.prevent="$emit('boardTitle', boardTitle)">
       <div class="board">
         <input type="hidden" id="boardId" name="boardId" value="{{ boardId }}">
         <label class="board-title" for="boards">
@@ -18,7 +20,6 @@
       </div>
     </form>
   </div>
-
 </template>
 
 <script setup>

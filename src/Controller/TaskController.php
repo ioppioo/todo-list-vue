@@ -35,8 +35,31 @@ class TaskController extends AbstractController
             'data' => [
                 'taskId' => $taskId,
                 'taskListId' => $taskListId
-            ]
-        ]);
+            ]],
+            200, [], ['groups' => ['taskLists']]
+        );
+    }
+
+    #[Route("/tasks/{id}", methods: 'GET')]
+    public function getTask(
+        TaskRepository $taskRepository,
+        Request         $request,
+    )
+    {
+        $id = $request->get('id');
+        $task = $taskRepository->find($id);
+
+        $this->denyAccessUnlessGranted('view', $task->getTaskList()->getBoard());
+
+        return $this->json([
+            'status' => 'ok',
+            'data' => [
+                'task' => $task,
+                'taskListId' => $task->getTaskList()->getId(),
+                'boardId' => $task->getTaskList()->getBoard()->getId(),
+            ]],
+            200, [], ['groups' => ['taskList', 'taskLists']]
+        );
     }
 
     #[Route("/tasks/{id}", methods: 'PUT')]
@@ -60,7 +83,13 @@ class TaskController extends AbstractController
 
         return $this->json([
             'status' => 'ok',
-        ]);
+            'data' => [
+                'taskListId' => $task->getTaskList()->getId(),
+                'taskText' => $task->getText(),
+                'isDone' => $task->isIsDone(),
+            ]],
+            200, [], ['groups' => ['taskLists']]
+        );
     }
 
     #[Route("/tasks/{id}", methods: 'DELETE')]

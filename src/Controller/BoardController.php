@@ -66,6 +66,8 @@ class BoardController extends AbstractController
             'status' => 'ok',
             'data' => [
                 'taskLists' => $taskLists,
+                'id' => $board->getId(),
+                'title' => $board->getTitle(),
             ]],
             200, [], ['groups' => ['taskLists']]
         );

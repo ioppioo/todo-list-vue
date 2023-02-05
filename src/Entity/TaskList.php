@@ -13,13 +13,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: TaskListRepository::class)]
 class TaskList
 {
-    #[Groups(['taskLists'])]
+    #[Groups(['taskLists', 'taskList'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(['taskLists'])]
+    #[Groups(['taskLists', 'taskList'])]
     #[ORM\Column(length: 255)]
     private string $title;
 
@@ -27,7 +27,7 @@ class TaskList
     #[ORM\OneToMany(mappedBy: "taskList", targetEntity: Task::class)]
     private Collection $tasks;
 
-    #[Groups(['taskLists'])]
+    #[Groups(['taskLists', 'taskList'])]
     #[ORM\ManyToOne(targetEntity: Board::class, inversedBy: 'taskLists')]
     #[ORM\JoinColumn(nullable: false)]
     private Board $board;

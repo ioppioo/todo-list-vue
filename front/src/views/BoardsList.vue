@@ -2,9 +2,11 @@
 
   <div class="boards" v-if="boards">
 
-    <div class="logout">
-      <router-link to="/logout"
-                   class="board-title-text">Выход
+    <div class="board">
+      <router-link to="/logout">
+        <div class="board-new-title">
+          <span class="board-title-text">Выход</span>
+        </div>
       </router-link>
     </div>
 
