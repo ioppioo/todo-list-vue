@@ -10,10 +10,8 @@
 
     <form action="/tasks" method="POST" @submit.prevent="$emit('taskText', taskText)">
       <div class="new-note">
-        <input type="hidden" id="taskListId" name="taskListId" value="{{ taskListId }}">
-        <input type="hidden" id="taskId" name="taskId" value="{{ taskId }}">
         <ol class="tasks">
-          <li class="tasks__task" for="task-list">
+          <li class="tasks__task">
                         <textarea v-model="taskText" class="input" rows="1" id="taskText" name="taskText">
                           {{ taskText }}
                         </textarea>
@@ -28,7 +26,7 @@
 <script setup>
 import {ref} from "vue";
 import {useRouter, useRoute} from "vue-router";
-import {createTasks, editTask, getTask, getTaskList} from "../api.js";
+import {createTasks, editTask, getTask} from "../api.js";
 
 const router = useRouter();
 

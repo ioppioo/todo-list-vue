@@ -10,8 +10,7 @@
 
     <form action="/boards" method="POST" @submit.prevent="$emit('boardTitle', boardTitle)">
       <div class="board">
-        <input type="hidden" id="boardId" name="boardId" value="{{ boardId }}">
-        <label class="board-title" for="boards">
+        <label class="board-title">
                     <textarea v-model="boardTitle" class="input" rows="1" id="title" name="boardTitle">
                       {{ boardTitle }}
                     </textarea>

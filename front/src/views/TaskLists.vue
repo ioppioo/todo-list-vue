@@ -32,11 +32,12 @@
         </router-link>
       </div>
 
-      <ol class="tasks"
-          v-for="task in taskList.tasks"
-          :key="task.id"
-          :data-task-id="`${task.id}`">
-        <li class="tasks__task" v-bind:class="{ done: task.isDone }">
+      <ol class="tasks">
+        <li class="tasks__task"
+            v-for="task in taskList.tasks"
+            :key="task.id"
+            :data-task-id="`${task.id}`"
+            v-bind:class="{ done: task.isDone}">
           <button v-on:click="onTaskDone(task.id, task.isDone)" class="button button-done">✓</button>
           <span class="tasks__task-text"
                 :data-task-text="task.text">

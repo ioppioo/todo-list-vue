@@ -10,9 +10,7 @@
 
     <form action="/task-lists" method="POST" @submit.prevent="$emit('title', title)">
         <div class="new-note">
-          <input type="hidden" id="boardId" name="boardId" value="{{ boardId }}">
-          <input type="hidden" id="taskListId" name="taskListId" value="{{ taskListId }}">
-          <label class="title-note" for="task-list">
+          <label class="title-note">
             <textarea v-model="title" class="input" rows="1" id="title" name="title">{{ title }}</textarea>
             <button v-on:click="onEditTaskList" class="button button-edit">✓</button>
           </label>
