@@ -1,25 +1,29 @@
 <template>
-  <div class="notes notes-edit">
-    <div class="note">
-      <router-link :to="`/boards/${boardId}`">
-        <div class="title-new-note">
-          <span class="title-note-text">Назад</span>
-        </div>
-      </router-link>
-    </div>
-
-    <form action="/tasks" method="POST" @submit.prevent="$emit('taskText', taskText)">
-      <div class="new-note">
-        <ol class="tasks">
-          <li class="tasks__task">
-                        <textarea v-model="taskText" class="input" rows="1" id="taskText" name="taskText">
-                          {{ taskText }}
-                        </textarea>
-            <button v-on:click="onEditTask" class="button button-edit">✓</button>
-          </li>
-        </ol>
+  <div>
+    <nav class="navbar" style="background-color: #e3f2fd;">
+      <div class="container-fluid">
+        <span class="title-new-note">Список задач</span>
+        <router-link :to="`/boards/${boardId}`">
+          <span class="btn btn-primary">Назад</span>
+        </router-link>
       </div>
-    </form>
+    </nav>
+
+    <div class="container py-5 px-5 mx-auto text-center">
+      <form action="/tasks" method="POST" @submit.prevent="$emit('taskText', taskText)">
+        <div class="input-group">
+<!--          <ol class="tasks">-->
+<!--            <li class="tasks__task">-->
+              <span class="input-group-text">Задача</span>
+              <textarea v-model="taskText" class="form-control input" rows="1" id="taskText" name="taskText">
+                {{ taskText }}
+              </textarea>
+              <button v-on:click="onEditTask" class="btn btn-outline-secondary">✓</button>
+<!--            </li>-->
+<!--          </ol>-->
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -48,8 +52,8 @@ if (taskId) {
       .then(json => {
         task.value = json.data.task;
         taskText.value = task.value.text;
-        taskListId =json.data.taskListId;
-        boardId =json.data.boardId;
+        taskListId = json.data.taskListId;
+        boardId = json.data.boardId;
       })
 }
 

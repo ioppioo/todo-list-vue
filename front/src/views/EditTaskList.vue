@@ -1,22 +1,23 @@
 <template>
-  <div class="notes notes-edit">
-    <div class="note">
-      <router-link :to="`/boards/${boardId}`">
-        <div class="title-new-note">
-          <span class="title-note-text">Назад</span>
-        </div>
-      </router-link>
-    </div>
+  <div>
+    <nav class="navbar" style="background-color: #e3f2fd;">
+      <div class="container-fluid">
+        <span class="title-new-note">Список задач</span>
+        <router-link :to="`/boards/${boardId}`">
+          <span class="btn btn-primary">Назад</span>
+        </router-link>
+      </div>
+    </nav>
 
-    <form action="/task-lists" method="POST" @submit.prevent="$emit('title', title)">
-        <div class="new-note">
-          <label class="title-note">
-            <textarea v-model="title" class="input" rows="1" id="title" name="title">{{ title }}</textarea>
-            <button v-on:click="onEditTaskList" class="button button-edit">✓</button>
-          </label>
+    <div class="container py-5 px-5 mx-auto text-center">
+      <form action="/task-lists" method="POST" @submit.prevent="$emit('title', title)">
+        <div class="input-group">
+          <span class="input-group-text">Название списка</span>
+          <textarea v-model="title" class="form-control input" rows="1" id="title" name="title">{{ title }}</textarea>
+          <button v-on:click="onEditTaskList" class="btn btn-outline-secondary">✓</button>
         </div>
-    </form>
-    
+      </form>
+    </div>
   </div>
 </template>
 

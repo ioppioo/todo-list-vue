@@ -1,24 +1,27 @@
 <template>
-  <div class="boards">
-    <div class="board">
-      <router-link to="/boards">
-        <div class="board-new-title">
-          <span class="board-title-text">К списку досок</span>
-        </div>
-      </router-link>
-    </div>
-
-    <form action="/boards" method="POST" @submit.prevent="$emit('boardTitle', boardTitle)">
-      <div class="board">
-        <label class="board-title">
-                    <textarea v-model="boardTitle" class="input" rows="1" id="title" name="boardTitle">
-                      {{ boardTitle }}
-                    </textarea>
-          <button v-on:click="onEditBoard" class="button button-edit">✓</button>
-        </label>
+  <div>
+    <nav class="navbar" style="background-color: #e3f2fd;">
+      <div class="container-fluid">
+        <span class="board-title-text">Создание новой доски</span>
+        <router-link to="/boards">
+          <span class="btn btn-primary">К списку досок</span>
+        </router-link>
       </div>
-    </form>
+    </nav>
+
+    <div class="container py-5 px-5 mx-auto text-center">
+      <form action="/boards" method="POST" @submit.prevent="$emit('boardTitle', boardTitle)">
+        <div class="input-group">
+          <span class="input-group-text">Название доски</span>
+          <textarea v-model="boardTitle" class="form-control input" rows="1" id="title" name="boardTitle">
+              {{ boardTitle }}
+          </textarea>
+          <button v-on:click="onEditBoard" class="btn btn-outline-secondary">✓</button>
+        </div>
+      </form>
+    </div>
   </div>
+
 </template>
 
 <script setup>

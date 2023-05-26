@@ -1,21 +1,23 @@
 <template>
-  <div class="form">
+  <div class="auth-container py-5 px-5 mx-auto text-center">
     <form class="inner-form" action="/login" method="post" @submit.prevent="$emit('login', login, password)">
       <div>
-        <label class="label-text" for="login">
-          <input type="text" id="login" name="username" v-model="login" placeholder="Логин">
-        </label>
+        <div class="form-floating" for="login">
+          <input class="form-control"  type="text" id="floatingLogin" name="username" v-model="login" placeholder="Логин">
+          <label for="floatingLogin">Логин</label>
+        </div>
       </div>
       <div>
-        <label class="label-text" for="password">
-          <input type="password" id="password" name="password" v-model="password" placeholder="Пароль">
-        </label>
+        <div class="form-floating" for="password">
+          <input class="form-control"  type="password" id="password" name="password" v-model="password" placeholder="Пароль">
+          <label for="floatingLogin">Пароль</label>
+        </div>
       </div>
       <div class="a-signup">
         <router-link to="/signup">Регистрация</router-link>
       </div>
       <div>
-        <button class="button-auth button-signin" type="submit">Войти</button>
+        <button type="submit" class="btn btn-primary" >Войти</button>
       </div>
     </form>
   </div>

@@ -28,6 +28,10 @@ export function signup(login, email, password) {
     return request('/signup', 'POST', {login, email, password})
 }
 
+export function logout() {
+    return request('/logout', 'POST')
+}
+
 export function me() {
     return request('/me', 'GET')
 }
@@ -52,7 +56,6 @@ export function removeBoard(boardId) {
     return request(`/boards/${boardId}`, 'DELETE');
 }
 
-
 export function getTaskList(id) {
     return request(`/task-lists/${id}`, 'GET')
 }
@@ -68,7 +71,6 @@ export function editTaskList(taskListId, title) {
 export function removeTaskList(taskListId) {
     return request(`/task-lists/${taskListId}`, 'DELETE');
 }
-
 
 export function getTask(id) {
     return request(`/tasks/${id}`, 'GET')
