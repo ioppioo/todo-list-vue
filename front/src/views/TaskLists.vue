@@ -1,57 +1,82 @@
 <template>
-  <div class="notes" v-if="taskLists">
-    <div>
-      <div class="note">
-        <div class="title-new-note">
-          <router-link to="/boards" class="title-note-text">К списку досок</router-link>
+  <div>
+    <nav class="navbar" style="background-color: #e3f2fd;">
+      <div class="container-fluid">
+        <span class="title-new-note">Списки задач</span>
+
+        <router-link :to="`/boards/${id}/task-lists/create`">
+          <span>Новый список</span>
+        </router-link>
+
+        <router-link to="/boards" role="button">
+          <span class="btn btn-primary">Назад</span>
+        </router-link>
+      </div>
+    </nav>
+
+    <div v-if="taskLists">
+      <div v-for="taskList in taskLists"
+           :key="taskList.id"
+           :data-task-list-id="`${taskList.id}`">
+
+        <div class="card border-primary mb-1" style="max-width: 240px;">
+
+          <div class="card-header row g-0">
+            <div class="col-md-8">
+            <h5 class="card-title" :data-task-list-title="taskList.title">{{ taskList.title }}</h5>
+            </div>
+
+            <div class="col-md-4">
+              <router-link :to="`/task-lists/${taskList.id}/edit`" role="button">
+                <img src="../icons/pencil-square.svg" alt="edit tasklist title" width="16" height="16">
+              </router-link>
+
+              <button v-on:click="onRemoveTaskList(taskList.id)" type="button" class="btn btn-link">
+                <img src="../icons/x-square.svg" alt="remove tasklist" width="16" height="16">
+              </button>
+            </div>
+
+          </div>
+
+          <ol class="list-group list-group-numbered">
+            <li v-for="task in taskList.tasks"
+                :key="task.id"
+                :data-task-id="`${task.id}`"
+                class="list-group-item">
+
+              <input v-on:click="onTaskDone(task.id, task.isDone)"
+                     v-bind="{ checked: task.isDone}"
+                     class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+
+              <span class="card-text form-check-label" for="flexCheckDefault" :data-task-text="task.text">{{
+                  task.text
+                }}</span>
+
+              <router-link :to="`/task-lists/${taskList.id}/tasks/${task.id}/edit`"
+                           role="button" class="btn btn-light btn-sm text-dark"
+                           v-bind:class="{ 'button-hidden': task.isDone }">
+                <img src="../icons/pen-fill.svg" alt="edit task" width="12" height="12">
+              </router-link>
+
+              <button v-on:click="onRemoveTask(task.id)" type="button" class="btn btn-light btn-sm text-dark">
+                <img src="../icons/x.svg" alt="remove task" width="18" height="18">
+              </button>
+            </li>
+          </ol>
+
+          <div class="card-footer text-center">
+            <router-link :to="`/boards/${id}/task-lists/${taskList.id}/tasks/create`" role="button" class="btn">
+<!--              <img src="../icons/plus-lg.svg" alt="new task" width="16" height="16">-->
+                  Новая задача
+            </router-link>
+          </div>
+
         </div>
       </div>
-
-      <div class="new-note">
-        <router-link :to="`/boards/${id}/task-lists/create`">
-          <div class="title-new-note">
-            <span class="title-note-text">Новый список</span>
-          </div>
-        </router-link>
-      </div>
     </div>
 
-    <div class="note"
-         v-for="taskList in taskLists"
-         :key="taskList.id"
-         :data-task-list-id="`${taskList.id}`">
-      <router-link :to="`/boards/${id}/task-lists/${taskList.id}/tasks/create`"
-                   class="button button-task-new">+
-      </router-link>
-      <button v-on:click="onRemoveTaskList(taskList.id)" class="button button-task-del">🞫</button>
-      <div class="title-note">
-                    <span class="title-note-text"
-                          :data-task-list-title="taskList.title">
-                        {{ taskList.title }}</span>
-        <router-link :to="`/task-lists/${taskList.id}/edit`" class="button button-edit">✎
-        </router-link>
-      </div>
-
-      <ol class="tasks">
-        <li class="tasks__task"
-            v-for="task in taskList.tasks"
-            :key="task.id"
-            :data-task-id="`${task.id}`"
-            v-bind:class="{ done: task.isDone}">
-          <button v-on:click="onTaskDone(task.id, task.isDone)" class="button button-done">✓</button>
-          <span class="tasks__task-text"
-                :data-task-text="task.text">
-            {{ task.text }}
-          </span>
-          <router-link :to="`/task-lists/${taskList.id}/tasks/${task.id}/edit`"
-                       class="button button-edit js-task-edit"
-                       v-bind:class="{ 'button-hidden': task.isDone }">✎
-          </router-link>
-          <button v-on:click="onRemoveTask(task.id)" class="button button-tasks-remove"> 🞫</button>
-        </li>
-      </ol>
-    </div>
   </div>
+
 </template>
 
 <script setup>

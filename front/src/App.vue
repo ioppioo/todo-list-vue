@@ -32,8 +32,6 @@ async function tryLogin(username, password) {
 
   const response = await auth(username, password);
 
-  console.log(await me());
-
   isAuthenticated.value = response.status === 200;
 
   if (isAuthenticated.value) {
