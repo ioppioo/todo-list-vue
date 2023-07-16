@@ -13,7 +13,7 @@
       <form action="/task-lists" method="POST" @submit.prevent="$emit('title', title)">
         <div class="input-group">
           <span class="input-group-text">Название списка</span>
-          <textarea v-model="title" class="form-control input" rows="1" id="title" name="title">{{ title }}</textarea>
+          <textarea v-model="title" class="form-control input align-middle" rows="1" id="title" name="title">{{ title }}</textarea>
           <button v-on:click="onEditTaskList" class="btn btn-outline-secondary">✓</button>
         </div>
       </form>

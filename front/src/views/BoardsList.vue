@@ -25,22 +25,22 @@
 
         <div class="card mb-1" style="max-width: 240px;">
           <div class="row g-0">
-             <div class="card-body col-md-8">
-              <router-link :to="`/boards/${board.id}`" class="">
-                <h5 class="card-title"
-                    :data-board-title="board.title">
-                  {{ board.title }}
-                </h5>
-              </router-link>
-            </div>
-
-            <div class="col-md-4 btn-group">
-              <router-link :to="`/boards/${board.id}/edit`" role="button" class="btn btn-light btn-sm text-dark">
-                <img src="../icons/pen-fill.svg" alt="edit task" width="12" height="12">
+            <div class="card-body input-group" style="padding: 0;">
+              <router-link :to="`/boards/${board.id}`"
+                           :data-board-title="board.title"
+                           class="card-title form-control text-wrap stretched-link"
+                           style="margin-bottom:0; border: none; font-size: larger;">
+                {{ board.title }}
               </router-link>
 
-              <button v-on:click="onRemoveBoard(board.id)" type="button" class="btn btn-light btn-sm text-dark">
-                <img src="../icons/x.svg" alt="remove board" width="12" height="12">
+              <router-link :to="`/boards/${board.id}/edit`" role="button"
+                           class="btn btn-outline-light d-flex align-content-center flex-wrap">
+                <img src="../icons/pen-fill.svg" alt="edit task" width="10" height="10">
+              </router-link>
+
+              <button v-on:click="onRemoveBoard(board.id)" type="button"
+                      class="btn btn-outline-light d-flex align-content-center flex-wrap">
+                <img src="../icons/x.svg" alt="remove board" width="18" height="18">
               </button>
             </div>
 
