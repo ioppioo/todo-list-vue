@@ -21,59 +21,68 @@
 
         <div class="card" style="max-width: 240px;">
           <div class="card-body input-group" style="padding: 0;">
-            <span class="card-title form-control text-wrap"
-                  style="padding-bottom: 0; border: none;"
+            <span class="card-title form-control p-2 m-0 text-wrap"
+                  style="border: none;"
                   :data-task-list-title="taskList.title">
               {{ taskList.title }}
             </span>
 
             <router-link :to="`/task-lists/${taskList.id}/edit`" role="button"
-                         class="btn btn-outline-light d-flex align-content-center flex-wrap">
+                         class="btn btn-outline-light d-flex p-2 align-content-center flex-wrap">
               <img src="../icons/pen-fill.svg" alt="edit taskList" width="10" height="10">
             </router-link>
 
             <button v-on:click="onRemoveTaskList(taskList.id)" type="button"
-                    class="btn btn-outline-light d-flex align-content-center flex-wrap">
+                    class="btn btn-outline-light d-flex p-2 align-content-center flex-wrap">
               <img src="../icons/x.svg" alt="remove taskList" width="18" height="18">
             </button>
           </div>
 
-          <ol class="list-group list-group-flush list-group-numbered">
+          <ul class="list-group list-group-flush"
+              style="margin: 0; padding: 0;">
             <li v-for="task in taskList.tasks"
                 :key="task.id"
                 :data-task-id="`${task.id}`"
-                class="input-group list-group-item">
+                class="list-group-item input-group d-flex ps-2 pe-0 py-0">
+
+              <span class="li-counter align-middle my-auto text-wrap" style="min-width: 20px"> </span>
 
               <input v-on:click="onTaskDone(task.id, task.isDone)"
                      v-bind="{ checked: task.isDone }"
-                     class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                     class="form-check-input btn btn-light m-0 p-0"
+                     style="height: auto; border-radius: 0" type="checkbox" value=""
+                     id="flexCheckDefault">
 
-              <span v-bind:class="{'text-decoration-line-through' :task.isDone} "
+              <span v-bind:class="{'text-decoration-line-through ' :task.isDone}"
                     :data-task-text="task.text"
                     for="flexCheckDefault"
-                    class="">
+                    class="form-check-label flex-fill p-2 text-wrap"
+                    style="width: 100px;">
                 {{ task.text }}
-                </span>
+              </span>
 
-              <router-link :to="`/task-lists/${taskList.id}/tasks/${task.id}/edit`"
-                           role="button" class="btn btn-outline-light"
+              <router-link :to="`/task-lists/${taskList.id}/tasks/${task.id}/edit`" role="button"
+                           class="btn btn-group btn-outline-light p-2 align-content-center flex-wrap"
                            v-bind:class="{ 'visually-hidden' :task.isDone }">
-                <img src="../icons/pen-fill.svg" alt="edit task" width="8" height="8" class="align-middle">
+                <img src="../icons/pen-fill.svg" alt="edit task" width="10" height="10">
               </router-link>
 
+
               <button v-on:click="onRemoveTask(task.id)" type="button"
-                      class="btn btn-outline-light d-flex align-content-center flex-wrap">
+                      class="btn btn-group btn-outline-light p-2 align-content-center flex-wrap">
                 <img src="../icons/x.svg" alt="remove task" width="18" height="18">
               </button>
-            </li>
-          </ol>
 
-          <div class="card-body text-center">
-            <router-link :to="`/boards/${id}/task-lists/${taskList.id}/tasks/create`" role="button" class="btn">
+            </li>
+          </ul>
+
+          <div class="card-body text-center"
+               style="padding: 0; border: none;">
+            <router-link :to="`/boards/${id}/task-lists/${taskList.id}/tasks/create`" role="button"
+                         class="btn btn-outline-light d-flex align-content-center flex-wrap">
               Новая задача
             </router-link>
           </div>
-
         </div>
       </div>
 
@@ -122,7 +131,6 @@ async function onTaskDone(id, isDone) {
         }
       })
 }
-
 </script>
 
 <style>
