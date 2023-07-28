@@ -1,20 +1,23 @@
 <template>
   <div>
-    <nav class="navbar" style="background-color: #e3f2fd;">
+    <nav class="navbar" style="background-color: #f5f5f6;">
       <div class="container-fluid">
         <span class="title-new-note">Список задач</span>
         <router-link :to="`/boards/${boardId}`">
-          <span class="btn btn-primary">Назад</span>
+          <span class="btn btn btn-light btn-light-form-edit">Назад</span>
         </router-link>
       </div>
     </nav>
 
     <div class="container py-5 px-5 mx-auto text-center">
       <form action="/task-lists" method="POST" @submit.prevent="$emit('title', title)">
-        <div class="input-group">
-          <span class="input-group-text">Название списка</span>
-          <textarea v-model="title" class="form-control input align-middle" rows="1" id="title" name="title">{{ title }}</textarea>
-          <button v-on:click="onEditTaskList" class="btn btn-outline-secondary">✓</button>
+        <div class="input-group ">
+          <div class="form-floating">
+          <textarea v-model="title" class="form-control input" rows="1" id="title" name="title"
+                    placeholder="Название списка">{{ title }}</textarea>
+            <label for="title">Название списка</label>
+          </div>
+          <button v-on:click="onEditTaskList" class="btn btn-light btn-light-form-edit">✓</button>
         </div>
       </form>
     </div>

@@ -58,6 +58,8 @@ class AuthController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/me')]
     public function me()
     {
