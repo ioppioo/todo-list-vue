@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar" style="background-color: #e3f2fd;">
+    <nav class="navbar" style="background-color: #f5f5f6;">
       <div class="container-fluid">
         <span class="title-new-note">Списки задач</span>
 
@@ -9,80 +9,71 @@
         </router-link>
 
         <router-link to="/boards" role="button">
-          <span class="btn btn-primary">Назад</span>
+          <span class="btn btn-light btn-light-form-edit">Назад</span>
         </router-link>
       </div>
     </nav>
 
-    <div v-if="taskLists">
-      <div v-for="taskList in taskLists"
-           :key="taskList.id"
-           :data-task-list-id="`${taskList.id}`">
+    <div class="container">
+      <div v-if="taskLists" class="row"
+           data-masonry='{"percentPosition": true }'>
+        <div v-for="taskList in taskLists"
+             :key="taskList.id"
+             :data-task-list-id="`${taskList.id}`"
+             class="col-4 mt-4 py-2 px-2" style="min-width: 240px;">
 
-        <div class="card border-primary mb-1" style="max-width: 240px;">
+          <div class="card">
+            <div class="card-body input-group" style="padding: 0;">
+              <span class="card-header form-control m-0 p-2"
+                    style="border: none;"
+                    :data-task-list-title="taskList.title">
+                {{ taskList.title }}
+              </span>
 
-          <div class="card-header row g-0">
-            <div class="col-md-8">
-            <h5 class="card-title" :data-task-list-title="taskList.title">{{ taskList.title }}</h5>
-            </div>
 
-            <div class="col-md-4">
-              <router-link :to="`/task-lists/${taskList.id}/edit`" role="button">
-                <img src="../icons/pencil-square.svg" alt="edit tasklist title" width="16" height="16">
+              <router-link :to="`/task-lists/${taskList.id}/edit`" role="button"
+                           class="btn btn-light d-flex m-0 p-2 align-content-center flex-wrap">
+                <img src="../icons/pen-fill.svg" alt="edit taskList" width="10" height="10">
               </router-link>
 
-              <button v-on:click="onRemoveTaskList(taskList.id)" type="button" class="btn btn-link">
-                <img src="../icons/x-square.svg" alt="remove tasklist" width="16" height="16">
+              <button v-on:click="onRemoveTaskList(taskList.id)" type="button"
+                      class="btn btn-light btn-light-remove-taskList d-flex m-0 p-2 align-content-center flex-wrap">
+                <img src="../icons/x.svg" alt="remove taskList" width="18" height="18">
               </button>
             </div>
 
-          </div>
+            <ol class="list-group list-group-flush"
+                style="margin: 0; padding: 0;">
+              <Tasks v-for="(task, index) in taskList.tasks"
+                     :index="index += 1"
+                     :key="task.id"
+                     v-bind="task"
+                     @onTaskDone="onTaskDone(task.id, task.isDone)"
+                     @onRemoveTask="onRemoveTask(task.id)"
+                     @edit="onEditTask(taskList.id,task.id)"
+              >
+              </Tasks>
+            </ol>
 
-          <ol class="list-group list-group-numbered">
-            <li v-for="task in taskList.tasks"
-                :key="task.id"
-                :data-task-id="`${task.id}`"
-                class="list-group-item">
-
-              <input v-on:click="onTaskDone(task.id, task.isDone)"
-                     v-bind="{ checked: task.isDone}"
-                     class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-
-              <span class="card-text form-check-label" for="flexCheckDefault" :data-task-text="task.text">{{
-                  task.text
-                }}</span>
-
-              <router-link :to="`/task-lists/${taskList.id}/tasks/${task.id}/edit`"
-                           role="button" class="btn btn-light btn-sm text-dark"
-                           v-bind:class="{ 'button-hidden': task.isDone }">
-                <img src="../icons/pen-fill.svg" alt="edit task" width="12" height="12">
+            <div class="card-footer"
+                 style="padding: 0; border: none;">
+              <router-link :to="`/boards/${id}/task-lists/${taskList.id}/tasks/create`" role="button"
+                           class="btn btn-light btn-light-new-task d-flex justify-content-center flex-wrap">
+                Новая задача
               </router-link>
-
-              <button v-on:click="onRemoveTask(task.id)" type="button" class="btn btn-light btn-sm text-dark">
-                <img src="../icons/x.svg" alt="remove task" width="18" height="18">
-              </button>
-            </li>
-          </ol>
-
-          <div class="card-footer text-center">
-            <router-link :to="`/boards/${id}/task-lists/${taskList.id}/tasks/create`" role="button" class="btn">
-<!--              <img src="../icons/plus-lg.svg" alt="new task" width="16" height="16">-->
-                  Новая задача
-            </router-link>
+            </div>
           </div>
-
         </div>
       </div>
     </div>
-
   </div>
-
 </template>
 
 <script setup>
 import {ref} from "vue";
-import {getBoard, removeTask, removeTaskList, taskDone} from "../api.js"
+import {getBoard, removeTask, removeTaskList, taskDone} from "../api.js";
 import {useRoute, useRouter} from "vue-router";
+import Tasks from "./Tasks.vue"
 
 const router = useRouter();
 
@@ -107,7 +98,7 @@ async function onRemoveTaskList(taskListId) {
 }
 
 async function onRemoveTask(id) {
-  await removeTask(id);
+  await removeTask(id)
   task.value = task.value.filter(task => task.id !== id);
 }
 
@@ -118,6 +109,10 @@ async function onTaskDone(id, isDone) {
           isDone = true;
         }
       })
+}
+
+async function onEditTask(taskListId, taskId) {
+  await router.push(`/task-lists/${taskListId}/tasks/${taskId}/edit`)
 }
 
 </script>

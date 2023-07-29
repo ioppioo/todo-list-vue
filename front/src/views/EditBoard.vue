@@ -1,10 +1,10 @@
 <template>
   <div>
-    <nav class="navbar" style="background-color: #e3f2fd;">
+    <nav class="navbar" style="background-color: #f5f5f6;">
       <div class="container-fluid">
         <span class="board-title-text">Создание новой доски</span>
         <router-link to="/boards">
-          <span class="btn btn-primary">К списку досок</span>
+          <span class="btn btn btn-light btn-light-form-edit">К списку досок</span>
         </router-link>
       </div>
     </nav>
@@ -12,11 +12,12 @@
     <div class="container py-5 px-5 mx-auto text-center">
       <form action="/boards" method="POST" @submit.prevent="$emit('boardTitle', boardTitle)">
         <div class="input-group">
-          <span class="input-group-text">Название доски</span>
-          <textarea v-model="boardTitle" class="form-control input" rows="1" id="title" name="boardTitle">
-              {{ boardTitle }}
-          </textarea>
-          <button v-on:click="onEditBoard" class="btn btn-outline-secondary">✓</button>
+          <div class="form-floating">
+            <textarea v-model="boardTitle" class="form-control input" rows="1" id="title" name="boardTitle"
+                      placeholder="Название доски">{{ boardTitle }}</textarea>
+            <label for="title">Название доски</label>
+          </div>
+          <button v-on:click="onEditBoard" class="btn btn-light btn-light-form-edit">✓</button>
         </div>
       </form>
     </div>

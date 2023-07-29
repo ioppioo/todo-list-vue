@@ -1,46 +1,43 @@
 <template>
   <div>
-    <nav class="navbar" style="background-color: #e3f2fd;">
+    <nav class="navbar" style="background-color: #f5f5f6">
       <div class="container-fluid">
-        <!--      <a class="navbar-brand" href="#">TodoList</a>-->
-
         <router-link to="/boards/create">
-          <div class="board-new-title">
-            <span class="board-title-text">Новая доска</span>
-          </div>
+          <span class="board-title-text">Новая доска</span>
         </router-link>
 
-        <router-link to="/logout">
-          <div class="board-new-title">
-            <span class="btn btn-primary">Выход</span>
-          </div>
-        </router-link>
+        <div v-on:click="tryLogout()" action="/logout" method="POST" @submit.prevent="$emit('logout')">
+          <button class="btn btn btn-light btn-light-form-edit">
+            <span>Выход</span>
+          </button>
+        </div>
+
       </div>
     </nav>
 
-    <div class="" v-if="boards">
+    <div v-if="boards">
       <div v-for="board in boards"
            :key="board.id"
            :data-board-id="`${board.id}`">
 
-        <div class="card mb-1" style="max-width: 240px;">
-          <div class="row g-0">
-             <div class="card-body col-md-8">
-              <router-link :to="`/boards/${board.id}`" class="">
-                <h5 class="card-title"
-                    :data-board-title="board.title">
-                  {{ board.title }}
-                </h5>
-              </router-link>
-            </div>
-
-            <div class="col-md-4 btn-group">
-              <router-link :to="`/boards/${board.id}/edit`" role="button" class="btn btn-light btn-sm text-dark">
-                <img src="../icons/pen-fill.svg" alt="edit task" width="12" height="12">
+        <div class="card m-2" style="max-width: 240px;">
+          <div class="row g-1">
+            <div class="card-body input-group" style="padding: 0;">
+              <router-link :to="`/boards/${board.id}`"
+                           :data-board-title="board.title"
+                           class="card-title form-control text-wrap stretched-link"
+                           style="margin-bottom:0; border: none;">
+                {{ board.title }}
               </router-link>
 
-              <button v-on:click="onRemoveBoard(board.id)" type="button" class="btn btn-light btn-sm text-dark">
-                <img src="../icons/x.svg" alt="remove board" width="12" height="12">
+              <router-link :to="`/boards/${board.id}/edit`" role="button"
+                           class="btn btn-outline-light d-flex  p-2 align-content-center flex-wrap">
+                <img src="../icons/pen-fill.svg" alt="edit task" width="10" height="10">
+              </router-link>
+
+              <button v-on:click="onRemoveBoard(board.id)" type="button"
+                      class="btn btn-light btn-light-form-edit">
+                <img src="../icons/x.svg" alt="remove board" width="18" height="18">
               </button>
             </div>
 
@@ -54,14 +51,15 @@
 
 <script setup>
 
-import {getBoards} from "../api.js"
-import {removeBoard} from "../api.js"
+import {getBoards, removeBoard, logout} from "../api.js"
 import {ref} from "vue";
 import {useRouter} from "vue-router";
 
 const router = useRouter();
 
 const boards = ref(null);
+
+const isAuthenticated = ref(null);
 
 const response = getBoards()
     .then(response => response.json())
@@ -72,6 +70,17 @@ const response = getBoards()
 async function onRemoveBoard(boardId) {
   await removeBoard(boardId);
   boards.value = boards.value.filter(board => board.id !== boardId);
+}
+
+async function tryLogout() {
+
+  const response = await logout()
+
+  isAuthenticated.value = response.status === 200;
+
+  if (isAuthenticated.value) {
+    await router.push('/login');
+  }
 }
 
 </script>
